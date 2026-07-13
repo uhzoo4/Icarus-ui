@@ -48,6 +48,7 @@ window#waybar {
 #pulseaudio,
 #network,
 #battery,
+#custom-controlcenter,
 #custom-power,
 #tray {
     padding: 0 10px;
@@ -58,6 +59,7 @@ window#waybar {
 #pulseaudio:hover,
 #network:hover,
 #battery:hover,
+#custom-controlcenter:hover,
 #custom-power:hover {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 4px;

@@ -22,34 +22,34 @@ window#waybar {
     margin: 4px;
 }
 
-#custom-launchpad {
+/* Style for all pinned application launchers & active task buttons */
+#custom-launchpad,
+#custom-finder,
+#custom-safari,
+#custom-terminal,
+#taskbar button {
     font-size: 22px;
-    padding: 0 10px;
+    padding: 4px 10px;
+    margin: 0 4px;
     color: #000000;
+    border-radius: 12px;
     transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-#custom-launchpad:hover {
-    transform: scale(1.22) translateY(-6px);
+#custom-launchpad:hover,
+#custom-finder:hover,
+#custom-safari:hover,
+#custom-terminal:hover,
+#taskbar button:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    /* macOS zoom/lift animation */
+    transform: scale(1.28) translateY(-10px);
 }
 
 #custom-divider {
     font-size: 18px;
     color: rgba(0, 0, 0, 0.2);
     padding: 0 5px;
-}
-
-#taskbar button {
-    padding: 4px 8px;
-    margin: 0 4px;
-    border-radius: 12px;
-    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-#taskbar button:hover {
-    background-color: rgba(255, 255, 255, 0.35);
-    /* macOS zoom/lift animation */
-    transform: scale(1.28) translateY(-10px);
 }
 
 /* Active window dot indicators */

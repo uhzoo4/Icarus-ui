@@ -8,13 +8,31 @@
     "spacing": 8,
     "modules-center": [
         "custom/launchpad",
+        "custom/finder",
+        "custom/safari",
+        "custom/terminal",
         "custom/divider",
         "wlr/taskbar"
     ],
     "custom/launchpad": {
         "format": "  ",
         "on-click": "rofi -show drun -theme ~/.config/rofi/launchpad.rasi",
-        "tooltip": false
+        "tooltip-format": "Launchpad"
+    },
+    "custom/finder": {
+        "format": " 󰉋 ",
+        "on-click": "dolphin",
+        "tooltip-format": "Finder"
+    },
+    "custom/safari": {
+        "format": "  ",
+        "on-click": "firefox",
+        "tooltip-format": "Safari"
+    },
+    "custom/terminal": {
+        "format": "  ",
+        "on-click": "kitty",
+        "tooltip-format": "Terminal"
     },
     "custom/divider": {
         "format": "│",

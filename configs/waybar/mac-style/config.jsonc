@@ -16,6 +16,7 @@
         "pulseaudio",
         "network",
         "battery",
+        "custom/controlcenter",
         "custom/power"
     ],
     "custom/apple": {
@@ -64,6 +65,11 @@
         "format-charging": " {capacity}%",
         "format-plugged": " {capacity}%",
         "format-icons": ["", "", "", "", ""]
+    },
+    "custom/controlcenter": {
+        "format": "",
+        "on-click": "eww open --toggle dashboard",
+        "tooltip-format": "Control Center"
     },
     "custom/power": {
         "format": "⏻",
