@@ -13,96 +13,97 @@
                           ░                 ░                
 ```
 
-# ARCHOS FRONTEND BUILD — UI & RICING LAYER
-**The Premium Ricing & Custom Desktop Configuration for CachyOS / Arch Linux**
+# ICARUS UI — SYSTEM RICE & CONFIGURATION SUITE
+**The Premium Multi-Distro Desktop Customization for Fedora, CachyOS, and Arch Linux**
 
-[![CachyOS](https://img.shields.io/badge/OS-CachyOS-blue.svg?logo=arch-linux&logoColor=white&style=for-the-badge)](#)
+[![Fedora Linux](https://img.shields.io/badge/OS-Fedora_Linux-blue.svg?logo=fedora&logoColor=white&style=for-the-badge)](#)
+[![CachyOS](https://img.shields.io/badge/OS-CachyOS-cyan.svg?logo=arch-linux&logoColor=white&style=for-the-badge)](#)
 [![Arch Linux](https://img.shields.io/badge/OS-Vanilla_Arch-blue.svg?logo=arch-linux&logoColor=white&style=for-the-badge)](#)
 [![Compositor](https://img.shields.io/badge/WM-Hyprland-orange.svg?style=for-the-badge)](#)
-[![Theme Engine](https://img.shields.io/badge/THEME-Archos_Glass-purple.svg?style=for-the-badge)](#)
-[![System Protection](https://img.shields.io/badge/System-Kernel_Safe-success.svg?style=for-the-badge)](#)
+[![Desktop Preset](https://img.shields.io/badge/Variant-KDE_Plasma-green.svg?style=for-the-badge)](#)
 
-*This is a dedicated, system-safe frontend and ricing build. It is optimized to deploy custom GTK/icon themes, application preferences, window manager configs, and wallpapers directly onto an already booted CachyOS/Arch Linux system without touching kernel settings, /boot configurations, or level-zero compute operations.*
+*Icarus UI is an elite, multi-distro-safe desktop customization suite. It is designed to deploy premium GTK/icon assets, window decorations, dynamic video color generators, animations, panels, and custom-compiled tiling layouts seamlessly across Fedora, CachyOS, and Arch Linux systems.*
 
 </div>
 
 ---
 
-## ⚡ Key Frontend Features
+## ⚡ Main Highlights & Custom Features
 
-### 🎨 The Archos Premium Aesthetic Stack
-- **Archos GTK Theme**: A glassmorphic dark theme supporting GTK3, GTK4, and Libadwaita.
-- **Archos Icon Theme**: Muted, premium high-res icon set tailored for dark layouts.
-- **Archos Cursors & Aura-Mew-Cursor**: Premium macOS-like animated cursors or custom Aura-Mew animations.
-- **Archos Firefox Theme**: Natively styles your browser to merge into the desktop's styling.
-- **Hyprlock Fades**: Custom Bezier curves and overshot spring physics integrated directly into your lock screen configuration.
+### 🍏 macOS-Style Desktop Preset (`mac-style`)
+A premium macOS-inspired workspace workflow consisting of:
+- **Interactive Bottom Dock**: A floating, glassmorphic app dock built natively using Waybar. It features pinned quick-launchers (Finder, Safari, Terminal) and active task indicators that zoom and bounce dynamically using custom-tuned CSS scale transitions.
+- **Fullscreen Launchpad**: An immersive application grid launcher styled within Rofi, mapped directly to `SUPER+A`.
+- **Top Menu Bar**: A sleek, centered top bar layout with an Apple-style application menu, central calendar clock, and quick-access indicators.
 
-### 🎥 Video Wallpaper & Dynamic Color Engine
-An absolute monster of a live wallpaper system. It plays high-res `.mp4`, `.webm`, `.mkv`, and `.gif` wallpapers natively via `mpvpaper` with two key features:
-1. **Dynamic Video Frame Extraction**: When you select a video wallpaper, `ffmpeg` automatically extracts a representative frame to generate a custom Material You dynamic color palette for your entire OS (Hyprland, Waybar, kitty, Rofi) in real-time.
-2. **Battery & Fullscreen Pausing Daemon**: A background service (`icarus-wallpaper-daemon`) monitors your state. If you switch to battery power or run any fullscreen application, it instantly pauses video decoding to save energy and GPU performance, resuming immediately when plugged back in or when the window is closed.
+### 🎛️ Eww Control Center Dashboard
+A custom dashboard utility mapped to `SUPER+D` or toggled by clicking the Control Center button (``) on the top bar:
+- Includes interactive volume and brightness scales.
+- Quick network, Bluetooth, and notification toggles.
+- Real-time CPU usage, RAM utilization, disk stats, and media playing controls.
 
-### 📋 Cockpit Terminal Bindings
-No more awkward keyboard finger-twisting. `kitty.conf` is configured with smart clipboard maps:
-- **`Ctrl + C`**: Copies selected text when there is active selection; otherwise, it sends `SIGINT` (standard interrupt) to cancel a command.
-- **`Ctrl + V`**: Pastes directly from the clipboard.
+### 🎥 Video Wallpaper & Material color Palette
+- **Palette Generator**: When switching video or static wallpapers, `ffmpeg` and our Python engine analyze the background to dynamically generate a Material You color system (`colors.conf` and `colors.scss`) applied across Hyprland, Waybar, kitty, and Rofi instantly.
+- **Pause Daemon**: A background service monitors battery states and fullscreen windows to automatically pause live wallpaper rendering to save resources.
+
+### 🖥️ KDE Plasma Variant (Jux Preset Theme)
+For users who prefer KDE Plasma, the codebase includes a complete alternative desktop theme suite under `configs/kde/`:
+- **Mystical-Blue Theme**: Custom global colors (`JuxTheme.colors`), window frame decorations (`JuxDeco`), and Kvantum templates (`NoMansSkyJux`).
+- **KWin Dynamic Tiling (Krohnkite)**: Bundled krohnkite tiling scripts to bring bspwm/dwm-like tiling into your KWin compositor.
+- **Force Blur Compiler**: An automated script compiles and installs the KWin Force Blur plugin from source, adding glassmorphism to transparent window layers.
+
+### 📦 Smart Wallpaper Bank Installer
+To prevent repository bloat, we use a smart installer framework:
+- A curated selection of **15 peak wallpapers** (under 15MB) is permanently stored in the repository.
+- If the full wallpaper zip archive is present locally, the installer automatically copies the entire **780MB wallpaper bank** straight to `/usr/share/backgrounds/icarus/references/`.
 
 ---
 
 ## 🚀 How to Deploy on a Booted System
 
-To apply this custom desktop ricing, wallpapers, video wallpaper engine, and configurations directly onto your running CachyOS or Arch Linux installation:
+To apply this custom desktop configuration, wallpapers, panels, and widget styles to your running system:
 
 ```bash
-# Enter the frontend build directory
-cd frontend_build
+# Clone the repository
+git clone https://github.com/uhzoo4/Icarus-ui.git
+cd Icarus-ui
 
 # Run the master user configuration launcher
-./run.sh
+bash run.sh
 ```
 
-### What this script does:
-1. Installs system dependencies for UI (Hyprland desktop stack, waybar, rofi, dunst, kitty, fastfetch, cava, etc.) and AUR dependencies via your helper (`paru` or `yay`).
-2. Installs custom wallpaper tools, switcher, and pause-daemon utilities into `/usr/local/bin/`.
-3. Compiles and installs the custom GTK themes, icons, and cursor sets.
-4. Integrates the WhiteSur/Archos custom wallpapers.
-5. Populates your user folder (`~/.config/`) with configuration files for Hyprland, Waybar, Kitty, Dunst, Rofi, Fastfetch, and Eww.
-
-> [!NOTE]
-> This build **specifically skips SDDM login screen overrides and Plymouth bootloader splash themes** in order to avoid altering core system initialization files or calling root commands for boot configurations.
+### For KDE Plasma Variant Theme:
+To compile and deploy the Plasma ricing and KWin extensions, run the KDE installer:
+```bash
+bash configs/kde/install.sh
+```
 
 ---
 
-## 📂 Frontend Folder Layout
+## 📂 Repository Folder Layout
 
 ```text
-frontend_build/
-├── apply-extra.sh                  # One-click theme applicator (adapted to skip boot configurations)
-├── run.sh                          # Master script to initialize, update, and deploy the UI layer
-├── update.sh                       # Pulls the latest commits and executes run.sh
+Icarus-ui/
+├── apply-extra.sh                  # Distro-aware package and configuration installer
+├── run.sh                          # Master setup orchestrator
+├── update.sh                       # Updates workspace files
 ├── configs/
-│   ├── hypr/                       # Hyprland & Hyprlock configurations
-│   ├── waybar/                     # Waybar status panel configurations
-│   ├── kitty/                      # Cockpit terminal setup (smart copy/paste)
-│   ├── cava/                       # Cava audio visualizer configuration
-│   ├── dunst/                      # Dunst notification configurations
-│   ├── eww/                        # Eww dashboard widgets
-│   ├── fastfetch/                  # Fastfetch system info logo configurations
-│   ├── nvim/                       # Neovim text editor configs
-│   ├── rofi/                       # Rofi launcher and power menus
-│   ├── theme/                      # CSS/Conf assets for dynamic coloring
-│   ├── wallpaper/                  # Wallpaper picker UI, daemon, and references
-│   └── wine/                       # Wine-Wayland launch wrapper scripts
+│   ├── hypr/                       # Hyprland workflows (mac-style, gaming, etc.) and curves
+│   ├── waybar/                     # Top panels and macOS bottom Dock layouts
+│   ├── eww/                        # Control Center widgets and scripts
+│   ├── kde/                        # KDE Plasma themes and install scripts
+│   ├── rofi/                       # Launchpad and Spotlight launcher themes
+│   ├── dunst/                      # Glassmorphic notifications
+│   ├── fastfetch/                  # Boxed hardware information logo layouts
+│   ├── kitty/                      # Terminal settings with smart copy/paste binds
+│   ├── cava/                       # Audio visualizer profiles
+│   ├── yazi/                       # Yazi file manager configurations
+│   └── wallpaper/                  # Wallpaper switchers and reference images
 ├── pkgs/
-│   ├── themes/                     # Theme packages (GTK, Icon, Cursor themes)
-│   └── sddm-themes/                # Desktop login theme assets
-├── layers/
-│   ├── MANIFEST                    # Frontend-only ordered layers index
-│   ├── 05-ui-winhybrid.sh          # Hyprland/Waybar configuration setup
-│   ├── 07-native-apps.sh           # Apps layout (Firefox styling, welcome scripts)
-│   └── 09-curated-apps.sh          # Smalldaily-use tool profiler (icarus-apps)
+│   ├── themes/                     # Pre-packaged WhiteSur GTK and cursor themes
+│   └── kde/                        # Krohnkite & Force Blur source modules
 └── tools/
-    └── icarus-palette.py           # Python dynamic palette generator script
+    └── icarus-palette.py           # Color palette generator
 ```
 
 ---
