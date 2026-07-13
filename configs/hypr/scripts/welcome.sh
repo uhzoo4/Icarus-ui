@@ -149,12 +149,8 @@ for arg in "$@"; do
 done
 [[ "$MODE" == "auto" ]] && MODE="${ICARUS_WELCOME_MODE:-auto}"
 if [[ "$MODE" == "auto" ]]; then
-    if [[ -f "$SESSION_MARK" ]]; then
-        MODE="quick"
-    else
-        MODE="full"
-        : > "$SESSION_MARK" 2>/dev/null || true
-    fi
+    # User requested full animations on EVERY terminal launch
+    MODE="full"
 fi
 (( INTERACTIVE == 0 )) && MODE="off"
 

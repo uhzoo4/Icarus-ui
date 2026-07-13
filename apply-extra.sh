@@ -247,7 +247,24 @@ cp "${HOME}/.config/gtk-3.0/settings.ini" "${HOME}/.config/gtk-4.0/settings.ini"
 ok "User GTK parameters written."
 
 step "6b. Copying user configurations (hypr, waybar, kitty, rofi, dunst, fastfetch, cava, wlogout, eww, nvim, yazi)"
-mkdir -p "${HOME}/.config"
+mkdir -p "${HOME}/.config" "${HOME}/.themes" "${HOME}/.local/share/icons"
+
+# Copy premium macOS assets to user directories
+info "Installing premium macOS UI assets..."
+if [[ -d "${REPO_PATH}/configs/themes/WhiteSur-gtk" ]]; then
+    cp -rn "${REPO_PATH}/configs/themes/WhiteSur-gtk" "${HOME}/.themes/" || true
+fi
+if [[ -d "${REPO_PATH}/configs/icons/WhiteSur-icons" ]]; then
+    cp -rn "${REPO_PATH}/configs/icons/WhiteSur-icons" "${HOME}/.local/share/icons/" || true
+fi
+if [[ -d "${REPO_PATH}/configs/cursors/WhiteSur-cursors" ]]; then
+    cp -rn "${REPO_PATH}/configs/cursors/WhiteSur-cursors" "${HOME}/.local/share/icons/" || true
+fi
+if [[ -d "${REPO_PATH}/configs/sddm/WhiteSur" ]]; then
+    sudo mkdir -p /usr/share/sddm/themes
+    sudo cp -rn "${REPO_PATH}/configs/sddm/WhiteSur" /usr/share/sddm/themes/ || true
+fi
+
 for CFG_DIR in hypr waybar kitty rofi dunst fastfetch cava wlogout eww nvim yazi; do
     if [[ -d "${REPO_PATH}/configs/${CFG_DIR}" ]]; then
         info "Copying ${CFG_DIR} configuration..."

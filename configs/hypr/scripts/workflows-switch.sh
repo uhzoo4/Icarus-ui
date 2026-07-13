@@ -21,5 +21,15 @@ selected=$(echo "$choices" | rofi -dmenu -i -p "System Workflows" -theme icarus-
 if [[ -n "$selected" ]]; then
     conf_file="${HOME}/.config/hypr/workflows.conf"
     echo "source = ~/.config/hypr/workflows/${selected}.conf" > "$conf_file"
+    
+    # Handle Waybar transitions dynamically
+    if [[ "$selected" == "mac-style" ]]; then
+        killall waybar
+        waybar -c ~/.config/waybar/mac-style/config.jsonc -s ~/.config/waybar/mac-style/style.css &
+    else
+        killall waybar
+        waybar &
+    fi
+
     notify-send -i "preferences-desktop-display" "Icarus-OS" "System workflow set to: ${selected}"
 fi

@@ -1,0 +1,92 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Inter", "SF Pro Display", "Roboto", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+window#waybar {
+    background-color: rgba(255, 255, 255, 0.75);
+    color: #333333;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    /* Frosted glass effect */
+    backdrop-filter: blur(10px);
+}
+
+.modules-left, .modules-center, .modules-right {
+    margin: 0 10px;
+}
+
+#custom-apple {
+    font-size: 16px;
+    padding: 0 10px;
+    color: #000000;
+}
+
+#custom-apple:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    color: #555555;
+}
+
+#workspaces button:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+#workspaces button.active {
+    color: #000000;
+    font-weight: 700;
+}
+
+#clock,
+#pulseaudio,
+#network,
+#battery,
+#custom-power,
+#tray {
+    padding: 0 10px;
+    color: #333333;
+}
+
+#clock:hover,
+#pulseaudio:hover,
+#network:hover,
+#battery:hover,
+#custom-power:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+#custom-power {
+    color: #d32f2f;
+}
+
+#battery.charging {
+    color: #2e7d32;
+}
+
+#battery.warning:not(.charging) {
+    color: #f57c00;
+}
+
+#battery.critical:not(.charging) {
+    color: #d32f2f;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #d32f2f;
+    }
+}
