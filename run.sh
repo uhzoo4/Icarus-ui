@@ -18,6 +18,7 @@ chmod +x "${REPO_PATH}/apply-extra.sh"
 chmod +x "${REPO_PATH}/update.sh"
 chmod +x "${REPO_PATH}/run.sh"
 chmod +x "${REPO_PATH}/configs/wallpaper/"*.sh || true
+chmod +x "${REPO_PATH}/configs/kde/install.sh" || true
 chmod +x "${REPO_PATH}/tools/icarus-palette.py" || true
 ok "All scripts are executable."
 

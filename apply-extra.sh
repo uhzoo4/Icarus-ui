@@ -225,6 +225,12 @@ if [[ -d "${REPO_PATH}/STEAL" ]]; then
         ! -path "*/WhiteSur-gtk-theme*" ! -path "*/WhiteSur-icon-theme*" ! -path "*/WhiteSur-cursors*" ! -path "*/Archos-*" 2>/dev/null)
 fi
 
+# Copy entire peak wallpaper bank from MORE folder if present
+if [[ -d "${REPO_PATH}/STEAL/MORE/extracted/wallpaper-main/wallpaper-main" ]]; then
+    info "Installing complete 780MB wallpaper bank to system backgrounds..."
+    sudo cp -rn "${REPO_PATH}/STEAL/MORE/extracted/wallpaper-main/wallpaper-main/." /usr/share/backgrounds/icarus/references/ || true
+fi
+
 
 step "5. Caching Firefox Archos theme"
 if [[ -d "${REPO_PATH}/pkgs/themes/Archos-firefox-theme" ]]; then
