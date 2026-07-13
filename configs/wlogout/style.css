@@ -1,0 +1,68 @@
+/* Icarus-ArchOS — wlogout glassmorphic power menu
+   Circular button pills with steel-blue hover glow and cinematic
+   transitions. Inspired by Qylock Nothing's circular action buttons
+   and KDE blur patterns, reimagined for GTK/wlogout rendering. */
+
+
+
+* {
+    font-family: "JetBrains Mono Nerd Font", monospace;
+    background-image: none;
+    transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+window {
+    background-color: rgba(5, 5, 5, 0.72);
+}
+
+button {
+    color: #C7CACD;
+    background-color: rgba(18, 20, 22, 0.85);
+    border: 1px solid rgba(154, 160, 166, 0.12);
+    border-radius: 50%;
+    margin: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 32%;
+    min-width: 140px;
+    min-height: 140px;
+    font-size: 14px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+button:focus,
+button:active,
+button:hover {
+    background-color: rgba(74, 109, 140, 0.15);
+    border: 2px solid rgba(74, 109, 140, 0.55);
+    color: #E8EAED;
+    outline: none;
+    box-shadow: 0 0 30px rgba(74, 109, 140, 0.25),
+        0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Per-button SVG icons --- */
+
+#lock {
+    background-image: url("icons/lock.svg");
+}
+
+#logout {
+    background-image: url("icons/logout.svg");
+}
+
+#suspend {
+    background-image: url("icons/suspend.svg");
+}
+
+#hibernate {
+    background-image: url("icons/hibernate.svg");
+}
+
+#reboot {
+    background-image: url("icons/reboot.svg");
+}
+
+#shutdown {
+    background-image: url("icons/shutdown.svg");
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>Monterey Background</name>
+    <filename>@BACKGROUNDDIR@/Monterey/Monterey-light.jpg</filename>
+    <filename-dark>@BACKGROUNDDIR@/Monterey/Monterey.jpg</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#51a2da</pcolor>
+    <scolor>#294172</scolor>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Monterey Time of Day</name>
+    <filename>@BACKGROUNDDIR@/Monterey/Monterey-timed.xml</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#ffffff</pcolor>
+    <scolor>#000000</scolor>
+  </wallpaper>
+</wallpapers>

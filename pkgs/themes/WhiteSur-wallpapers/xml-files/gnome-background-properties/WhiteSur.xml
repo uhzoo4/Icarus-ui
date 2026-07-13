@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>WhiteSur Background</name>
+    <filename>@BACKGROUNDDIR@/WhiteSur/WhiteSur-light.jpg</filename>
+    <filename-dark>@BACKGROUNDDIR@/WhiteSur/WhiteSur.jpg</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#51a2da</pcolor>
+    <scolor>#294172</scolor>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>WhiteSur Nord Background</name>
+    <filename>@BACKGROUNDDIR@/Wallpaper-nord/WhiteSur-nord-light.png</filename>
+    <filename-dark>@BACKGROUNDDIR@/Wallpaper-nord/WhiteSur-nord-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#6882b3</pcolor>
+    <scolor>#455a85</scolor>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>WhiteSur Time of Day</name>
+    <filename>@BACKGROUNDDIR@/WhiteSur/WhiteSur-timed.xml</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#ffffff</pcolor>
+    <scolor>#000000</scolor>
+  </wallpaper>
+</wallpapers>

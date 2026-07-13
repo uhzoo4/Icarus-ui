@@ -1,0 +1,11 @@
+/* Default Intelligent Darkness theme (used before first dynamic generation) */
+* {
+    bg-base:       #050505;
+    bg-surface:    #0A0A0A;
+    bg-elevated:   #121416;
+    text-primary:  #C7CACD;
+    accent:        #4A6D8C;
+    accent-light:  #5B8BA8;
+    accent-dark:   #2C4A63;
+    accent-warm:   #D4845A;
+}

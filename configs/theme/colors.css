@@ -1,0 +1,9 @@
+/* Default Intelligent Darkness theme (used before first dynamic generation) */
+@define-color bgBase #050505;
+@define-color bgSurface #0A0A0A;
+@define-color bgElevated #121416;
+@define-color textPrimary #C7CACD;
+@define-color accent #4A6D8C;
+@define-color accentLight #5B8BA8;
+@define-color accentDark #2C4A63;
+@define-color accentWarm #D4845A;

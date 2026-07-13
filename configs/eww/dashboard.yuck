@@ -1,0 +1,117 @@
+(defpoll volume :interval "1s" "~/.config/eww/scripts/get_vol.sh")
+(defpoll brightness :interval "1s" "brightnessctl -m | awk -F, '{print substr($4, 0, length($4)-1)}'")
+(defpoll username :interval "24h" "whoami")
+(defpoll uptime :interval "1m" "uptime -p | sed 's/up //'")
+(defpoll weather_temp :interval "30m" "~/.config/eww/scripts/get_weather.sh temp")
+(defpoll weather_icon :interval "30m" "~/.config/eww/scripts/get_weather.sh icon")
+(defpoll weather_cond :interval "30m" "~/.config/eww/scripts/get_weather.sh condition")
+(defpoll music_title :interval "2s" "playerctl metadata title 2>/dev/null || echo ''")
+(defpoll music_artist :interval "2s" "playerctl metadata artist 2>/dev/null || echo ''")
+(defpoll music_status :interval "1s" "playerctl status 2>/dev/null || echo 'Stopped'")
+(defpoll disk_usage :interval "5m" "df -h / | awk 'NR==2{print $5}' | tr -d '%'")
+(defpoll net_speed :interval "2s" "~/.config/eww/scripts/get_net_speed.sh")
+
+(defwidget dashboard_layout []
+    (box :class "dashboard-container"
+         :orientation "vertical"
+         :space-evenly false
+
+        ;; ─── Profile Card ───
+        (box :class "card profile-card"
+             :orientation "horizontal"
+             :space-evenly false
+             :spacing 20
+             (image :path "/usr/share/backgrounds/icarus/icarus-midnight.png"
+                    :image-width 64
+                    :image-height 64)
+             (box :orientation "vertical"
+                  :space-evenly false
+                  :valign "center"
+                  (label :class "profile-name" :text username :halign "start")
+                  (label :class "profile-uptime" :text "up ${uptime}" :halign "start")))
+
+        ;; ─── Weather Card ───
+        (box :class "card weather-card"
+             :orientation "horizontal"
+             :space-evenly false
+             :spacing 16
+             (label :class "weather-icon" :text weather_icon)
+             (box :orientation "vertical"
+                  :space-evenly false
+                  :valign "center"
+                  (label :class "weather-temp" :text "${weather_temp}°C" :halign "start")
+                  (label :class "weather-cond" :text weather_cond :halign "start")))
+
+        ;; ─── Now Playing Card ───
+        (box :class "card music-card"
+             :orientation "vertical"
+             :space-evenly false
+             :spacing 8
+             :visible {music_title != ""}
+             (box :orientation "horizontal"
+                  :space-evenly false
+                  :spacing 12
+                  (label :class "music-icon" :text {music_status == "Playing" ? "󰐊" : "󰏤"})
+                  (box :orientation "vertical"
+                       :space-evenly false
+                       (label :class "music-title" :text music_title :halign "start" :limit-width 28)
+                       (label :class "music-artist" :text music_artist :halign "start" :limit-width 32)))
+             (box :orientation "horizontal"
+                  :space-evenly true
+                  :spacing 10
+                  (button :class "music-btn" :onclick "playerctl previous" "󰒮")
+                  (button :class "music-btn" :onclick "playerctl play-pause" {music_status == "Playing" ? "󰏤" : "󰐊"})
+                  (button :class "music-btn" :onclick "playerctl next" "󰒭")))
+
+        ;; ─── Quick Toggles ───
+        (box :class "card quick-toggles"
+             :orientation "horizontal"
+             :space-evenly true
+             :spacing 15
+             (button :class "toggle-btn" :tooltip "Network Settings" :onclick "nm-connection-editor &" "󰖩")
+             (button :class "toggle-btn" :tooltip "Bluetooth Settings" :onclick "blueman-manager &" "󰂯")
+             (button :class "toggle-btn" :tooltip "Toggle Notifications" :onclick "if dunstctl is-paused | grep -qx true; then dunstctl set-paused false; else dunstctl set-paused true; fi" "󰂚")
+             (button :class "toggle-btn" :tooltip "Power Menu" :onclick "rofi -show powermenu -modi 'powermenu:icarus-powermenu-entries' -theme icarus-powermenu" ""))
+
+        ;; ─── Sliders ───
+        (box :class "card sliders-box"
+             :orientation "vertical"
+             :space-evenly false
+             :spacing 25
+             (box :orientation "horizontal"
+                  :space-evenly false
+                  (label :class "slider-icon" :text "")
+                  (scale :class "slider"
+                         :value volume
+                         :tooltip "Volume: ${volume}%"
+                         :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ {}%"
+                         :min 0 :max 101))
+             (box :orientation "horizontal"
+                  :space-evenly false
+                  (label :class "slider-icon" :text "󰃠")
+                  (scale :class "slider"
+                         :value brightness
+                         :tooltip "Brightness: ${brightness}%"
+                         :onchange "brightnessctl s {}%"
+                         :min 0 :max 101)))
+
+        ;; ─── System Stats ───
+        (box :class "card stats-box"
+             :orientation "vertical"
+             :space-evenly false
+             :spacing 12
+             (box :orientation "vertical"
+                  :space-evenly false
+                  (label :class "stat-label" :text "CPU  ${round(EWW_CPU.avg, 0)}%" :halign "start")
+                  (scale :class "stat-bar" :value {EWW_CPU.avg} :active false :min 0 :max 100))
+             (box :orientation "vertical"
+                  :space-evenly false
+                  (label :class "stat-label" :text "RAM  ${round(EWW_RAM.used_mem_perc, 0)}%" :halign "start")
+                  (scale :class "stat-bar" :value {EWW_RAM.used_mem_perc} :active false :min 0 :max 100))
+             (box :orientation "vertical"
+                  :space-evenly false
+                  (label :class "stat-label" :text "DISK  ${disk_usage}%" :halign "start")
+                  (scale :class "stat-bar disk-bar" :value disk_usage :active false :min 0 :max 100))
+             (label :class "net-speed" :text "󰕒 ${net_speed}" :halign "start"))
+    )
+)

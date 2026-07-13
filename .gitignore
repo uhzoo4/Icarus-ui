@@ -1,0 +1,8 @@
+# Ignore heavy stolen archive source folders
+STEAL/
+
+# System and logs
+*.log
+*.bak*
+.DS_Store
+Thumbs.db

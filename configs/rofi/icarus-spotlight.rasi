@@ -1,0 +1,95 @@
+/*
+ * icarus-spotlight.rasi
+ * Intelligent Darkness palette — near-black, titanium structure, a single
+ * steel-blue accent on selection. No gradients, no saturated color.
+ * Installed system-wide to /usr/share/rofi/themes/ so bare
+ * `-theme icarus-spotlight` invocations resolve correctly.
+ */
+
+@import "~/.config/icarus/theme/colors.rasi"
+
+* {
+    bg:          rgba(10, 10, 10, 0.88);
+    bg-alt:      rgba(154, 160, 166, 0.08);   /* titanium, very faint */
+    fg:          @text-primary;
+    fg-dim:      rgba(199, 202, 205, 0.5);
+    accent-sel:  @accent;
+    border-col:  rgba(154, 160, 166, 0.16);
+
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "JetBrains Mono Nerd Font 13";
+}
+
+window {
+    location:     north;
+    anchor:       north;
+    y-offset:     18%;
+    width:        640px;
+    background-color: @bg;
+    border:       1px;
+    border-color: @border-col;
+    border-radius: 12px;
+    padding:      4px;
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, listview ];
+    spacing: 8px;
+    padding: 10px;
+}
+
+inputbar {
+    background-color: transparent;
+    children: [ prompt, entry ];
+    spacing: 8px;
+    padding: 6px 10px;
+    border: 0 0 1px 0;
+    border-color: @border-col;
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @fg-dim;
+}
+
+entry {
+    background-color: transparent;
+    text-color: @fg;
+    placeholder: "Search...";
+    placeholder-color: @fg-dim;
+}
+
+listview {
+    background-color: transparent;
+    lines: 8;
+    spacing: 2px;
+    scrollbar: false;
+    fixed-height: false;
+}
+
+element {
+    background-color: transparent;
+    text-color: @fg;
+    padding: 8px 10px;
+    border-radius: 8px;
+}
+
+element selected {
+    background-color: @bg-alt;
+    text-color: @fg;
+    border: 0 0 0 2px;
+    border-color: @accent-sel;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    vertical-align: 0.5;
+}
+
+element-icon {
+    size: 22px;
+    padding: 0 8px 0 0;
+}

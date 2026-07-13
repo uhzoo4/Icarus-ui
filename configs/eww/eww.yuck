@@ -1,0 +1,13 @@
+(include "./dashboard.yuck")
+
+(defwindow dashboard
+    :monitor 0
+    :geometry (geometry :x "20px"
+                        :y "60px"
+                        :width "380px"
+                        :height "450px"
+                        :anchor "top right")
+    :stacking "overlay"
+    :exclusive false
+    :namespace "eww-blur"
+    (dashboard_layout))

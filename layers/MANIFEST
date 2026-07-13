@@ -1,0 +1,6 @@
+# layers/MANIFEST for frontend_build
+# Only includes UI/Ricing and desktop app configurations.
+
+layer-5-ui-winhybrid:chroot:fatal:05-ui-winhybrid.sh
+layer-7-native-apps:chroot:soft:07-native-apps.sh
+layer-9-curated-apps:chroot:soft:09-curated-apps.sh

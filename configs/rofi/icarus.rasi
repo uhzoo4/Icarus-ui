@@ -1,0 +1,86 @@
+@import "~/.config/icarus/theme/colors.rasi"
+
+configuration {
+    modi: "drun,run";
+    show-icons: true;
+    display-drun: "󰣇";
+    display-run: "";
+    drun-display-format: "{name}";
+    font: "JetBrainsMono Nerd Font 11";
+}
+
+window {
+    transparency: "real";
+    location: center;
+    anchor: center;
+    width: 600px;
+    background-color: @bg-base;
+    border: 1px solid;
+    border-color: @accent-dark;
+    border-radius: 12px;
+}
+
+mainbox {
+    background-color: transparent;
+    spacing: 15px;
+    padding: 20px;
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    background-color: @bg-surface;
+    border: 1px solid;
+    border-color: @accent-dark;
+    border-radius: 8px;
+    padding: 10px;
+    spacing: 10px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @accent;
+    font: "JetBrainsMono Nerd Font 12";
+}
+
+entry {
+    background-color: transparent;
+    text-color: @text-primary;
+    placeholder: "Search...";
+    placeholder-color: #555555;
+    blink: true;
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 7;
+    spacing: 5px;
+    scrollbar: false;
+}
+
+element {
+    background-color: transparent;
+    text-color: @text-primary;
+    padding: 10px;
+    border-radius: 6px;
+    spacing: 10px;
+}
+
+element selected {
+    background-color: @bg-surface;
+    text-color: @accent-light;
+    border: 1px solid;
+    border-color: @accent;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: inherit;
+    vertical-align: 0.5;
+}
+
+element-icon {
+    background-color: inherit;
+    size: 24px;
+}

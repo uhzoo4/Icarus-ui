@@ -1,0 +1,89 @@
+/*
+ * icarus-powermenu.rasi
+ * Cinematic text-based power menu — an alternative to wlogout.
+ * Centered overlay, steel-blue selection indicator, Intelligent Darkness palette.
+ * Invoked with: rofi -show powermenu -modi "powermenu:icarus-powermenu-entries" -theme icarus-powermenu
+ */
+
+@import "~/.config/icarus/theme/colors.rasi"
+
+* {
+    bg:          rgba(5, 5, 5, 0.88);
+    bg-card:     rgba(18, 20, 22, 0.92);
+    fg:          @text-primary;
+    fg-dim:      rgba(199, 202, 205, 0.40);
+    accent-sel:  @accent;
+    border-col:  rgba(154, 160, 166, 0.14);
+
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "JetBrains Mono Nerd Font 15";
+}
+
+window {
+    location:          center;
+    anchor:            center;
+    width:             360px;
+    background-color:  @bg;
+    border:            1px;
+    border-color:      @border-col;
+    border-radius:     16px;
+    padding:           8px;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [ inputbar, listview ];
+    spacing:          4px;
+    padding:          16px;
+}
+
+inputbar {
+    background-color: transparent;
+    children:         [ prompt ];
+    padding:          8px 12px 16px 12px;
+    border:           0 0 1px 0;
+    border-color:     @border-col;
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @fg-dim;
+    font:             "JetBrains Mono Nerd Font 12";
+}
+
+entry {
+    enabled: false;
+}
+
+listview {
+    background-color: transparent;
+    lines:            5;
+    spacing:          4px;
+    scrollbar:        false;
+    fixed-height:     true;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @fg;
+    padding:          14px 16px;
+    border-radius:    12px;
+}
+
+element selected {
+    background-color: @bg-card;
+    text-color:       #E8EAED;
+    border:           0 0 0 3px;
+    border-color:     @accent-sel;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
+
+element-icon {
+    enabled: false;
+}

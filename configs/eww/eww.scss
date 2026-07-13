@@ -1,0 +1,171 @@
+@import "../icarus/theme/colors.scss";
+
+* {
+    all: unset;
+    font-family: "JetBrainsMono Nerd Font";
+}
+
+.dashboard-container {
+    background-color: rgba($bgBase, 0.88);
+    border: 1px solid rgba($accentDark, 0.6);
+    border-radius: 18px;
+    padding: 16px;
+}
+
+/* ─── Shared card style ─── */
+.card {
+    background-color: rgba($bgElevated, 0.70);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba($accentDark, 0.35);
+    transition: all 0.2s;
+}
+
+/* ─── Profile Card ─── */
+.profile-card {
+    padding: 18px;
+}
+
+.profile-name {
+    color: $textPrimary;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.profile-uptime {
+    color: rgba($textPrimary, 0.45);
+    font-size: 13px;
+}
+
+/* ─── Weather Card ─── */
+.weather-card {
+    padding: 14px 18px;
+}
+
+.weather-icon {
+    color: $accentWarm;
+    font-size: 36px;
+}
+
+.weather-temp {
+    color: $textPrimary;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.weather-cond {
+    color: rgba($textPrimary, 0.50);
+    font-size: 12px;
+}
+
+/* ─── Music / Now Playing ─── */
+.music-card {
+    padding: 14px 18px;
+}
+
+.music-icon {
+    color: $accentLight;
+    font-size: 28px;
+}
+
+.music-title {
+    color: $textPrimary;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.music-artist {
+    color: rgba($textPrimary, 0.50);
+    font-size: 12px;
+}
+
+.music-btn {
+    color: rgba($textPrimary, 0.60);
+    font-size: 20px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.music-btn:hover {
+    color: $accentLight;
+    background-color: rgba($accentDark, 0.4);
+}
+
+/* ─── Quick Toggles ─── */
+.quick-toggles {
+    padding: 12px 16px;
+}
+
+.toggle-btn {
+    background-color: rgba($bgBase, 0.5);
+    color: $textPrimary;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 22px;
+    border: 1px solid rgba($accentDark, 0.30);
+    transition: all 0.2s;
+}
+
+.toggle-btn:hover {
+    background-color: rgba($accentDark, 0.7);
+    color: $accentLight;
+    border-color: $accent;
+}
+
+/* ─── Sliders ─── */
+.sliders-box {
+    padding: 18px;
+}
+
+.slider scale trough highlight {
+    background-color: $accent;
+    border-radius: 10px;
+}
+
+.slider scale trough {
+    background-color: rgba($bgBase, 0.8);
+    border-radius: 10px;
+    min-height: 10px;
+    min-width: 250px;
+}
+
+.slider-icon {
+    color: $accentLight;
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+/* ─── System Stats ─── */
+.stats-box {
+    padding: 14px 16px;
+}
+
+.stat-label {
+    color: rgba($textPrimary, 0.70);
+    margin-bottom: 6px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.stat-bar scale trough highlight {
+    background-color: $accent;
+    border-radius: 5px;
+}
+
+.stat-bar.disk-bar scale trough highlight {
+    background-color: $accentWarm;
+}
+
+.stat-bar scale trough {
+    background-color: rgba($bgBase, 0.8);
+    min-height: 8px;
+    border-radius: 5px;
+}
+
+.net-speed {
+    color: rgba($textPrimary, 0.40);
+    font-size: 11px;
+    margin-top: 6px;
+}

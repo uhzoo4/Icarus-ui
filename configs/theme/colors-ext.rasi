@@ -1,0 +1,11 @@
+// Default Intelligent Darkness theme (used before first dynamic generation)
+@import "~/.config/icarus/theme/colors.rasi"
+
+* {
+    bg-elevated:  #121416;
+    accent-warm:  #D4845A;
+}
+
+/* NOTE: bgBase, bgSurface, textPrimary, accent, accentLight, accentDark
+   are defined in colors.rasi and imported above. The two new tokens are
+   added here because Rofi's @import only pulls the file's own * block. */

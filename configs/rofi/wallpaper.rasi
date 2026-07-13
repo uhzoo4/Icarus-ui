@@ -1,0 +1,96 @@
+/*
+ * wallpaper.rasi — Icarus wallpaper gallery picker
+ * Enlarged preview thumbnails, grid-style layout. Live media entries
+ * are prefixed with ▶ by the switcher script before being piped here.
+ */
+
+@import "~/.config/icarus/theme/colors.rasi"
+
+* {
+    bg:          rgba(5, 5, 5, 0.92);
+    bg-card:     rgba(18, 20, 22, 0.85);
+    fg:          @text-primary;
+    fg-dim:      rgba(199, 202, 205, 0.45);
+    accent-sel:  @accent;
+    border-col:  rgba(154, 160, 166, 0.14);
+
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "JetBrains Mono Nerd Font 12";
+}
+
+window {
+    location:          center;
+    anchor:            center;
+    width:             720px;
+    background-color:  @bg;
+    border:            1px;
+    border-color:      @border-col;
+    border-radius:     16px;
+    padding:           6px;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [ inputbar, listview ];
+    spacing:          8px;
+    padding:          12px;
+}
+
+inputbar {
+    background-color: transparent;
+    children:         [ prompt, entry ];
+    spacing:          8px;
+    padding:          8px 12px;
+    border:           0 0 1px 0;
+    border-color:     @border-col;
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @fg-dim;
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @fg;
+    placeholder:      "Search scenes...";
+    placeholder-color: @fg-dim;
+}
+
+listview {
+    background-color: transparent;
+    lines:            10;
+    columns:          2;
+    spacing:          6px;
+    scrollbar:        false;
+    fixed-height:     false;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @fg;
+    padding:          10px 12px;
+    border-radius:    10px;
+    orientation:      horizontal;
+    spacing:          10px;
+}
+
+element selected {
+    background-color: @bg-card;
+    text-color:       #E8EAED;
+    border:           0 0 0 3px;
+    border-color:     @accent-sel;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
+
+element-icon {
+    size:             48px;
+    padding:          0 6px 0 0;
+    border-radius:    6px;
+}
