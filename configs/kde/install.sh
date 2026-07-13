@@ -144,6 +144,10 @@ if command -v kwriteconfig6 &>/dev/null; then
     
     # Force KWin configuration reload
     qdbus6 org.kde.KWin /KWin reconfigure 2>/dev/null || true
+    if pgrep -x "plasmashell" >/dev/null; then
+        info "Restarting plasmashell to apply desktop styles..."
+        plasmashell --replace >/dev/null 2>&1 &
+    fi
     ok "KDE settings applied dynamically."
 else
     warn "kwriteconfig6 utility not found. Please apply theme elements manually in System Settings."

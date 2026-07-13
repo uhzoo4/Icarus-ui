@@ -198,6 +198,166 @@ inactive_tab_foreground {text_primary}
         # Soft reload cava
         os.system("killall -SIGUSR1 cava 2>/dev/null")
 
+    # 10. KDE Plasma JuxTheme.colors
+    kde_dir = Path.home() / ".local" / "share" / "color-schemes"
+    kde_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Accent color values
+    acc_str = f"{r},{g},{b}"
+    acc_light_str = f"{int(lr*255)},{int(lg*255)},{int(lb*255)}"
+    acc_dark_str = f"{int(dr*255)},{int(dg*255)},{int(db*255)}"
+    
+    kde_colors = f"""[ColorEffects:Disabled]
+Color=56,56,56
+ColorAmount=0
+ColorEffect=0
+ContrastAmount=0.65
+ContrastEffect=1
+IntensityAmount=0.1
+IntensityEffect=2
+
+[ColorEffects:Inactive]
+ChangeSelectionColor=true
+Color=112,111,110
+ColorAmount=0.025
+ColorEffect=2
+ContrastAmount=0.1
+ContrastEffect=2
+Enable=false
+IntensityAmount=0
+IntensityEffect=0
+
+[Colors:Button]
+BackgroundAlternate={acc_dark_str}
+BackgroundNormal=27,28,34
+DecorationFocus={acc_str}
+DecorationHover={acc_str}
+ForegroundActive={acc_light_str}
+ForegroundInactive=136,138,154
+ForegroundLink={acc_light_str}
+ForegroundNegative=218,68,83
+ForegroundNeutral=106,151,255
+ForegroundNormal=225,225,225
+ForegroundPositive=39,174,96
+ForegroundVisited=154,160,208
+
+[Colors:Complementary]
+BackgroundAlternate={acc_dark_str}
+BackgroundNormal=32,35,38
+DecorationFocus={acc_str}
+DecorationHover={acc_str}
+ForegroundActive={acc_light_str}
+ForegroundInactive=161,169,177
+ForegroundLink={acc_light_str}
+ForegroundNegative=218,68,83
+ForegroundNeutral=246,116,0
+ForegroundNormal=252,252,252
+ForegroundPositive=39,174,96
+ForegroundVisited=154,160,208
+
+[Colors:Header]
+BackgroundAlternate=32,35,38
+BackgroundNormal=41,44,48
+DecorationFocus={acc_str}
+DecorationHover={acc_str}
+ForegroundActive={acc_light_str}
+ForegroundInactive=161,169,177
+ForegroundLink={acc_light_str}
+ForegroundNegative=218,68,83
+ForegroundNeutral=246,116,0
+ForegroundNormal=252,252,252
+ForegroundPositive=39,174,96
+ForegroundVisited=154,160,208
+
+[Colors:Header][Inactive]
+BackgroundAlternate=41,44,48
+BackgroundNormal=32,35,38
+DecorationFocus={acc_dark_str}
+DecorationHover={acc_dark_str}
+ForegroundActive={acc_dark_str}
+ForegroundInactive=161,169,177
+ForegroundLink={acc_dark_str}
+ForegroundNegative=218,68,83
+ForegroundNeutral=246,116,0
+ForegroundNormal=252,252,252
+ForegroundPositive=39,174,96
+ForegroundVisited=155,89,182
+
+[Colors:Selection]
+BackgroundAlternate={acc_dark_str}
+BackgroundNormal={acc_str}
+DecorationFocus={acc_light_str}
+DecorationHover={acc_light_str}
+ForegroundActive={acc_light_str}
+ForegroundInactive=111,113,139
+ForegroundLink={acc_light_str}
+ForegroundNegative=176,55,69
+ForegroundNeutral=106,151,255
+ForegroundNormal=252,252,252
+ForegroundPositive=23,104,57
+ForegroundVisited=154,160,208
+
+[Colors:Tooltip]
+BackgroundAlternate=32,35,38
+BackgroundNormal=37,38,48
+DecorationFocus={acc_str}
+DecorationHover={acc_str}
+ForegroundActive={acc_light_str}
+ForegroundInactive=136,138,154
+ForegroundLink={acc_light_str}
+ForegroundNegative=218,68,83
+ForegroundNeutral=106,151,255
+ForegroundNormal=216,216,216
+ForegroundPositive=39,174,96
+ForegroundVisited=154,160,208
+
+[Colors:View]
+BackgroundAlternate=42,44,49
+BackgroundNormal=28,28,35
+DecorationFocus={acc_str}
+DecorationHover={acc_str}
+ForegroundActive={acc_light_str}
+ForegroundInactive=136,138,154
+ForegroundLink={acc_light_str}
+ForegroundNegative=218,68,83
+ForegroundNeutral=106,151,255
+ForegroundNormal=220,220,220
+ForegroundPositive=39,174,96
+ForegroundVisited=154,160,208
+
+[Colors:Window]
+BackgroundAlternate=41,44,48
+BackgroundNormal=37,39,47
+DecorationFocus={acc_str}
+DecorationHover={acc_str}
+ForegroundActive={acc_light_str}
+ForegroundInactive=136,138,154
+ForegroundLink={acc_light_str}
+ForegroundNegative=218,68,83
+ForegroundNeutral=106,151,255
+ForegroundNormal=227,227,227
+ForegroundPositive=39,174,96
+ForegroundVisited=154,160,208
+
+[General]
+ColorScheme=JuxTheme
+Name=JuxTheme
+shadeSortColumn=true
+
+[KDE]
+contrast=4
+
+[WM]
+activeBackground=39,44,49
+activeBlend=252,252,252
+activeForeground=252,252,252
+inactiveBackground=32,36,40
+inactiveBlend=161,169,177
+inactiveForeground=161,169,177
+"""
+    with open(kde_dir / "JuxTheme.colors", "w") as f:
+        f.write(kde_colors)
+
 def update_cava(cava_path, accent_rgb):
     r, g, b = accent_rgb
     h, l, s = colorsys.rgb_to_hls(r/255.0, g/255.0, b/255.0)
@@ -294,6 +454,15 @@ def main():
     # instead of racing a kill-and-restart against Hyprland's autostart.
     os.system("dunstctl reload >/dev/null 2>&1")
     os.system("killall -SIGUSR1 kitty >/dev/null 2>&1")
+
+    # Reload KDE Plasma color scheme if running
+    if os.system("command -v kwriteconfig6 >/dev/null 2>&1") == 0:
+        os.system("kwriteconfig6 --file kdeglobals --group General --key ColorScheme JuxTheme >/dev/null 2>&1")
+        # Notify KWin of the reconfiguration
+        os.system("qdbus6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1")
+        os.system("dbus-send --session --dest=org.kde.KWin --type=method_call /KWin org.kde.KWin.reconfigure >/dev/null 2>&1")
+        # Notify Plasma shell to update its SVG widgets with the new system colors
+        os.system("qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.refreshCurrentTheme >/dev/null 2>&1")
 
 if __name__ == "__main__":
     main()
