@@ -32,27 +32,69 @@ chmod +x "${REPO_PATH}/configs/bootloader/install.sh" || true
 chmod +x "${REPO_PATH}/tools/icarus-palette.py" || true
 ok "All scripts are executable."
 
-step "2. Executing workspace configuration and compilation"
-bash "${REPO_PATH}/apply-extra.sh"
+step "2. Selecting components to deploy"
+echo -e "\n${c_bold}What components of Icarus UI would you like to deploy?${c_reset}"
+echo -e "  1) Hyprland Preset Suite (Default)"
+echo -e "  2) KDE Plasma Variant Theme"
+echo -e "  3) Animated GRUB Theme (Retroboot)"
+echo -e "  4) Animated GRUB Theme (Pochita)"
+echo -e "  5) Deploy Full Suite (All of the above)"
+read -rp "Enter choice [1-5, default: 1]: " COMP_CHOICE
+COMP_CHOICE="${COMP_CHOICE:-1}"
 
-step "3. Initializing Dynamic Material Color Palette"
-DEFAULT_WP="/usr/share/backgrounds/icarus/references/84.png"
-[[ -f "$DEFAULT_WP" ]] || DEFAULT_WP="/usr/share/backgrounds/icarus/icarus-midnight.png"
-if [[ -f "/usr/local/bin/icarus-palette" && -f "$DEFAULT_WP" ]]; then
-    info "Running palette generator on default wallpaper..."
-    /usr/local/bin/icarus-palette "$DEFAULT_WP" || true
-    ok "Theme colors initialized."
-else
-    warn "Palette generator or default wallpaper not found. Dynamic colors will be generated when you switch wallpapers."
+INSTALL_HYPRLAND=false
+INSTALL_KDE=false
+INSTALL_GRUB_RETRO=false
+INSTALL_GRUB_POCHITA=false
+
+case "$COMP_CHOICE" in
+    1) INSTALL_HYPRLAND=true ;;
+    2) INSTALL_KDE=true ;;
+    3) INSTALL_GRUB_RETRO=true ;;
+    4) INSTALL_GRUB_POCHITA=true ;;
+    5) INSTALL_HYPRLAND=true; INSTALL_KDE=true; INSTALL_GRUB_RETRO=true ;;
+    *) warn "Invalid selection. Defaulting to Hyprland Preset Suite."; INSTALL_HYPRLAND=true ;;
+esac
+
+if [[ "$INSTALL_HYPRLAND" == "true" ]]; then
+    step "Deploying Hyprland Preset Suite"
+    info "Running base package installer..."
+    bash "${REPO_PATH}/apply-extra.sh"
+    
+    info "Initializing dynamic color palette..."
+    DEFAULT_WP="/usr/share/backgrounds/icarus/references/84.png"
+    [[ -f "$DEFAULT_WP" ]] || DEFAULT_WP="/usr/share/backgrounds/icarus/icarus-midnight.png"
+    if [[ -f "/usr/local/bin/icarus-palette" && -f "$DEFAULT_WP" ]]; then
+        /usr/local/bin/icarus-palette "$DEFAULT_WP" || true
+    fi
+    
+    info "Reloading Hyprland and restarting Waybar..."
+    hyprctl reload >/dev/null 2>&1 || true
+    killall waybar 2>/dev/null || true
+    (waybar &) >/dev/null 2>&1 &
+    ok "Hyprland Preset Suite deployed successfully."
 fi
 
-step "4. Reloading Window Manager and Panel"
-info "Reloading Hyprland configuration..."
-hyprctl reload >/dev/null 2>&1 || true
-info "Restarting Waybar panel..."
-killall waybar 2>/dev/null || true
-(waybar &) >/dev/null 2>&1 &
-ok "Hyprland and Waybar successfully reloaded!"
+if [[ "$INSTALL_KDE" == "true" ]]; then
+    step "Deploying KDE Plasma Variant Theme"
+    # Ensure apply-extra packages/themes are installed first for consistency
+    info "Installing common system components..."
+    bash "${REPO_PATH}/apply-extra.sh"
+    
+    info "Executing KDE Plasma installer..."
+    bash "${REPO_PATH}/configs/kde/install.sh"
+    ok "KDE Plasma Variant theme deployed successfully."
+fi
+
+if [[ "$INSTALL_GRUB_RETRO" == "true" ]]; then
+    step "Deploying Animated GRUB Theme (Retroboot)"
+    bash "${REPO_PATH}/configs/bootloader/install.sh"
+fi
+
+if [[ "$INSTALL_GRUB_POCHITA" == "true" ]]; then
+    step "Deploying Animated GRUB Theme (Pochita)"
+    bash "${REPO_PATH}/configs/bootloader/install.sh" --pochita
+fi
 
 step "5. Install Custom Applications"
 CUSTOM_APPS=""
