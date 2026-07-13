@@ -72,11 +72,24 @@ cd Icarus-ui
 bash run.sh
 ```
 
-### For KDE Plasma Variant Theme:
-To compile and deploy the Plasma ricing and KWin extensions, run the KDE installer:
+### Component Selector:
+You can choose to install specific modules (Hyprland, KDE, or GRUB bootloader) or deploy the entire workspace:
 ```bash
-bash configs/kde/install.sh
+# Run the installer and choose your option from the menu:
+bash run.sh
 ```
+
+---
+
+## 📊 Project Status & Recent Milestones
+
+The Icarus UI project is **98% complete** and fully deployable as a stable visual suite.
+
+### 🛠️ What We Worked On Recently:
+1. **Unified Setup Flow**: Consolidated all component installations (Hyprland desktop, KDE Plasma variants, animated GRUB themes) into a single interactive chooser menu inside [run.sh](file:///d:/WebProjects/icarus-ui/run.sh).
+2. **KDE Dynamic Color Scheme Engine**: Extended our Python dynamic palette switcher ([tools/icarus-palette.py](file:///d:/WebProjects/icarus-ui/tools/icarus-palette.py)) to construct and apply colors to KDE's `JuxTheme.colors` config folder dynamically whenever the desktop wallpaper changes.
+3. **Animated Bootloader**: Extracted the custom animated **Retroboot** and **Pochita** GRUB themes from stolen repositories, added them to the tree, and built a distro-aware GRUB config builder script ([configs/bootloader/install.sh](file:///d:/WebProjects/icarus-ui/configs/bootloader/install.sh)).
+4. **Clean Asset Directory Layout**: Moved fastfetch logos and GRUB template backdrops out of the desktop wallpaper path, and renamed all custom wallpaper assets to fit a strict sequential numbering scheme (`173.png` to `183.jpg`).
 
 ---
 
@@ -85,22 +98,25 @@ bash configs/kde/install.sh
 ```text
 Icarus-ui/
 ├── apply-extra.sh                  # Distro-aware package and configuration installer
-├── run.sh                          # Master setup orchestrator
+├── run.sh                          # Master setup orchestrator (interactive menu)
 ├── update.sh                       # Updates workspace files
 ├── configs/
 │   ├── hypr/                       # Hyprland workflows (mac-style, gaming, etc.) and curves
 │   ├── waybar/                     # Top panels and macOS bottom Dock layouts
 │   ├── eww/                        # Control Center widgets and scripts
-│   ├── kde/                        # KDE Plasma themes and install scripts
+│   ├── kde/                        # KDE Plasma Jux Theme variant and install scripts
+│   ├── bootloader/                 # GRUB theme configuration builder and updater
 │   ├── rofi/                       # Launchpad and Spotlight launcher themes
 │   ├── dunst/                      # Glassmorphic notifications
-│   ├── fastfetch/                  # Boxed hardware information logo layouts
+│   ├── fastfetch/                  # Boxed hardware logo layouts and png directories
 │   ├── kitty/                      # Terminal settings with smart copy/paste binds
 │   ├── cava/                       # Audio visualizer profiles
 │   ├── yazi/                       # Yazi file manager configurations
 │   └── wallpaper/                  # Wallpaper switchers and reference images
 ├── pkgs/
 │   ├── themes/                     # Pre-packaged WhiteSur GTK and cursor themes
+│   ├── sddm-themes/                # SDDM Astronaut and Silent login screen templates
+│   ├── bootloader/                 # Compressed animated GRUB themes (Retroboot, Pochita)
 │   └── kde/                        # Krohnkite & Force Blur source modules
 └── tools/
     └── icarus-palette.py           # Color palette generator
