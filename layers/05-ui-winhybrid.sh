@@ -52,6 +52,10 @@ install_pkgs() {
                 discord) dnf_pkgs+=("discord") ;;
                 spotify) dnf_pkgs+=("spotify") ;;
                 mpvpaper) dnf_pkgs+=("mpvpaper") ;;
+                noctalia-shell) dnf_pkgs+=("noctalia-shell") ;;
+                noctiluca) dnf_pkgs+=("noctalia-shell") ;;
+                caelestia-shell) dnf_pkgs+=("caelestia-shell") ;;
+                caelestia-cli) dnf_pkgs+=("caelestia-cli") ;;
                 *) dnf_pkgs+=("$pkg") ;;
             esac
         done
@@ -62,6 +66,16 @@ install_pkgs() {
             fi
             if [[ " ${dnf_pkgs[*]} " =~ " starship " ]]; then
                 sudo dnf copr enable -y atim/starship || true
+            fi
+            if [[ " ${dnf_pkgs[*]} " =~ " noctalia-shell " ]]; then
+                sudo dnf copr enable -y zhangyi6324/noctalia-shell || true
+            fi
+            if [[ " ${dnf_pkgs[*]} " =~ " caelestia-shell " || " ${dnf_pkgs[*]} " =~ " caelestia-cli " ]]; then
+                sudo dnf copr enable -y errornointernet/quickshell || true
+                sudo dnf copr enable -y celestelove/libcava || true
+                sudo dnf copr enable -y celestelove/app2unit || true
+                sudo dnf copr enable -y brycensranch/gpu-screen-recorder-git || true
+                sudo dnf copr enable -y celestelove/caelestia || true
             fi
             sudo dnf install -y --skip-broken "${dnf_pkgs[@]}"
             
@@ -101,7 +115,8 @@ systemctl enable bluetooth.service
 
 log "Installing terminal extras and system info..."
 install_pkgs \
-    fastfetch cava pavucontrol python python-pillow
+    fastfetch cava pavucontrol python python-pillow \
+    noctalia-shell caelestia-shell caelestia-cli
 
 log "Installing Wine / Windows-app compatibility stack..."
 install_pkgs \

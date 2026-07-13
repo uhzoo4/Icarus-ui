@@ -21,6 +21,15 @@ if [[ "${EUID}" -eq 0 ]]; then
     exit 1
 fi
 
+# Sudo keepalive function
+sudo_init_keepalive() {
+    info "Initializing sudo keepalive. You may be prompted for your password once..."
+    sudo -v
+    # Keep sudo ticket alive in the background until the script exits
+    (while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done) 2>/dev/null &
+}
+sudo_init_keepalive
+
 REPO_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ ! -f "${REPO_PATH}/apply-extra.sh" ]]; then
     err "This script must be executed from inside the icarus-archos repository root."
@@ -64,6 +73,10 @@ install_pkgs() {
                 discord) dnf_pkgs+=("discord") ;;
                 spotify) dnf_pkgs+=("spotify") ;;
                 mpvpaper) dnf_pkgs+=("mpvpaper") ;;
+                noctalia-shell) dnf_pkgs+=("noctalia-shell") ;;
+                noctiluca) dnf_pkgs+=("noctalia-shell") ;;
+                caelestia-shell) dnf_pkgs+=("caelestia-shell") ;;
+                caelestia-cli) dnf_pkgs+=("caelestia-cli") ;;
                 *) dnf_pkgs+=("$pkg") ;;
             esac
         done
@@ -74,6 +87,16 @@ install_pkgs() {
             fi
             if [[ " ${dnf_pkgs[*]} " =~ " starship " ]]; then
                 sudo dnf copr enable -y atim/starship || true
+            fi
+            if [[ " ${dnf_pkgs[*]} " =~ " noctalia-shell " ]]; then
+                sudo dnf copr enable -y zhangyi6324/noctalia-shell || true
+            fi
+            if [[ " ${dnf_pkgs[*]} " =~ " caelestia-shell " || " ${dnf_pkgs[*]} " =~ " caelestia-cli " ]]; then
+                sudo dnf copr enable -y errornointernet/quickshell || true
+                sudo dnf copr enable -y celestelove/libcava || true
+                sudo dnf copr enable -y celestelove/app2unit || true
+                sudo dnf copr enable -y brycensranch/gpu-screen-recorder-git || true
+                sudo dnf copr enable -y celestelove/caelestia || true
             fi
             sudo dnf install -y --skip-broken "${dnf_pkgs[@]}"
             
@@ -119,7 +142,8 @@ info "Installing extra packages..."
 install_aur_pkgs \
     eww-wayland adw-gtk-theme bibata-cursor-theme \
     swayosd-git wl-clip-persist xfce-polkit waypaper \
-    helium-browser-bin discord spotify mpvpaper || true
+    helium-browser-bin discord spotify mpvpaper \
+    noctalia-shell caelestia-shell caelestia-cli || true
 
 ok "System and AUR dependencies installed."
 

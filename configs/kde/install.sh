@@ -17,6 +17,15 @@ if [[ "${EUID}" -eq 0 ]]; then
     exit 1
 fi
 
+# Sudo keepalive function
+sudo_init_keepalive() {
+    info "Initializing sudo keepalive. You may be prompted for your password once..."
+    sudo -v
+    # Keep sudo ticket alive in the background until the script exits
+    (while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done) 2>/dev/null &
+}
+sudo_init_keepalive
+
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${BASE_DIR}/../.." && pwd)"
 
@@ -48,6 +57,18 @@ tar -xzf "${BASE_DIR}/JuxPlasma.tar.gz" -C "$PLASMA_DIR/" && ok "Installed Plasm
 if [[ -f "${BASE_DIR}/NoMansSkyJux.tar.gz" ]]; then
     tar -xzf "${BASE_DIR}/NoMansSkyJux.tar.gz" -C "$KVANTUM_DIR/"
     ok "Installed Kvantum styling template: NoMansSkyJux"
+fi
+
+# Deploy Jux Rofi Assets if present
+ROFI_DIR="${HOME}/.config/rofi"
+ROFI_IMG_DIR="${HOME}/.local/share/jux-rofi-images"
+mkdir -p "$ROFI_DIR" "$ROFI_IMG_DIR"
+if [[ -f "${REPO_ROOT}/configs/rofi/jux.rasi" ]]; then
+    cp "${REPO_ROOT}/configs/rofi/jux.rasi" "$ROFI_DIR/config.rasi" && ok "Installed Jux Rofi config"
+fi
+if [[ -d "${BASE_DIR}/images" ]]; then
+    cp -r "${BASE_DIR}/images/"* "$ROFI_IMG_DIR/" 2>/dev/null || true
+    ok "Installed Jux Rofi images"
 fi
 
 # 3. Dynamic Tiling - Krohnkite
@@ -89,6 +110,45 @@ else
     warn "Force Blur source directory not found. Skipping."
 fi
 
+# 5. Automatically Apply KDE Plasma Theme & Decoration Configuration
+step "5. Auto-applying KDE Plasma configuration (Jux Variant)..."
+if command -v kwriteconfig6 &>/dev/null; then
+    info "Applying Jux color scheme..."
+    kwriteconfig6 --file kdeglobals --group "General" --key "ColorScheme" "JuxTheme" 2>/dev/null || true
+    
+    info "Applying Jux Plasma desktop theme..."
+    kwriteconfig6 --file plasmarc --group "Theme" --key "name" "JuxPlasma" 2>/dev/null || true
+    
+    info "Applying Jux window decoration borders..."
+    kwriteconfig6 --file kwinrc --group "org.kde.kdecoration2" --key "library" "org.kde.kwin.aurorae" 2>/dev/null || true
+    kwriteconfig6 --file kwinrc --group "org.kde.kdecoration2" --key "theme" "__aurorae__svg__JuxDeco" 2>/dev/null || true
+    
+    # Configure Kvantum to use NoMansSkyJux
+    if command -v kvantummanager &>/dev/null; then
+        info "Applying NoMansSkyJux Kvantum theme..."
+        kvantummanager --set NoMansSkyJux 2>/dev/null || true
+        kwriteconfig6 --file kdeglobals --group "KDE" --key "widgetStyle" "kvantum" 2>/dev/null || true
+    fi
+    
+    # Auto-enable tiling scripts if successfully registered
+    if [[ -n "${PLASMAPKG:-}" ]]; then
+        info "Enabling Krohnkite tiling..."
+        kwriteconfig6 --file kwinrc --group "Plugins" --key "krohnkiteEnabled" "true" 2>/dev/null || true
+    fi
+    
+    # Auto-enable KWin Force Blur if built
+    if [[ -d "${REPO_ROOT}/pkgs/kde/kwin-forceblur" ]]; then
+        info "Enabling KWin Force Blur plugin..."
+        kwriteconfig6 --file kwinrc --group "Plugins" --key "kwin-effects-forceblurEnabled" "true" 2>/dev/null || true
+    fi
+    
+    # Force KWin configuration reload
+    qdbus6 org.kde.KWin /KWin reconfigure 2>/dev/null || true
+    ok "KDE settings applied dynamically."
+else
+    warn "kwriteconfig6 utility not found. Please apply theme elements manually in System Settings."
+fi
+
 step "KDE Plasma theme variant deployment complete!"
-info "Apply it via System Settings -> Appearance."
-info "Enable Krohnkite tiling in System Settings -> Window Management -> KWin Scripts."
+info "Jux Theme has been applied dynamically to your desktop."
+info "Enable Krohnkite tiling in System Settings -> Window Management -> KWin Scripts if needed."

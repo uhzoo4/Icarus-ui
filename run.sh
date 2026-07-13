@@ -13,6 +13,15 @@ step()  { printf "\n${c_blue}==>${c_reset} ${c_bold}%s${c_reset}\n" "$1"; }
 
 REPO_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Sudo keepalive function
+sudo_init_keepalive() {
+    info "Initializing sudo keepalive. You may be prompted for your password once..."
+    sudo -v
+    # Keep sudo ticket alive in the background until the script exits
+    (while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done) 2>/dev/null &
+}
+sudo_init_keepalive
+
 step "1. Making sure installer scripts are executable"
 chmod +x "${REPO_PATH}/apply-extra.sh"
 chmod +x "${REPO_PATH}/update.sh"
