@@ -24,10 +24,13 @@ if [[ -n "$selected" ]]; then
     
     # Handle Waybar transitions dynamically
     if [[ "$selected" == "mac-style" ]]; then
-        killall waybar
+        killall waybar || true
+        # Spawn Top Bar
         waybar -c ~/.config/waybar/mac-style/config.jsonc -s ~/.config/waybar/mac-style/style.css &
+        # Spawn Bottom Dock
+        waybar -c ~/.config/waybar/mac-style/dock.jsonc -s ~/.config/waybar/mac-style/dock.css &
     else
-        killall waybar
+        killall waybar || true
         waybar &
     fi
 

@@ -1,0 +1,38 @@
+{
+    "layer": "top",
+    "position": "bottom",
+    "height": 56,
+    "margin-bottom": 8,
+    "margin-left": 200,
+    "margin-right": 200,
+    "spacing": 8,
+    "modules-center": [
+        "custom/launchpad",
+        "custom/divider",
+        "wlr/taskbar"
+    ],
+    "custom/launchpad": {
+        "format": "  ",
+        "on-click": "rofi -show drun -theme ~/.config/rofi/launchpad.rasi",
+        "tooltip": false
+    },
+    "custom/divider": {
+        "format": "│",
+        "tooltip": false
+    },
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "icon-size": 32,
+        "icon-size-multiplier": 1.0,
+        "tooltip-format": "{title}",
+        "on-click": "activate",
+        "on-click-middle": "close",
+        "active-first": false,
+        "ignore-list": [
+            "Waybar"
+        ],
+        "app_ids-mapping": {
+            "firefoxdeveloperedition": "firefox-developer-edition"
+        }
+    }
+}
