@@ -1,0 +1,20 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Bismuth
+Upstream-Contact: Mikhail Zolotukhin <mail@gikari.com>
+Source: https://github.com/gikari/bismuth
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
+
+# Images
+Files: img/*
+Copyright: none
+License: CC-BY-4.0
+
+# Json configs
+Files: *.json
+Copyright: none
+License: MIT

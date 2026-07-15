@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2021 Mikhail Zolotukhin <mail@genda.life>
+#
+# SPDX-License-Identifier: MIT
+
+---
+name: Documentation
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install and Build 🔧
+        run: |
+          npm install
+          make docs
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: build/docs

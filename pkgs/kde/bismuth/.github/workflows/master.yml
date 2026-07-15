@@ -1,0 +1,95 @@
+# SPDX-FileCopyrightText: 2021 Mikhail Zolotukhin <mail@genda.life>
+#
+# SPDX-License-Identifier: MIT
+
+---
+name: Main Workflow
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  reuse:
+    name: Check REUSE Compliance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v2
+
+      - name: REUSE Compliance Check 🏛️
+        uses: fsfe/reuse-action@v1
+
+  lint:
+    name: Lint & Check Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Validate QML and JavaScript files 💚
+        uses: liri-infra/qmllint-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Dev Dependencies for Linters ⚙️
+        run: |
+          npm install
+
+      - name: Lint via Super Linter 🚨
+        uses: github/super-linter@v4.8.2
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          JAVASCRIPT_DEFAULT_STYLE: prettier
+          LINTER_RULES_PATH: /
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
+          TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.json
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_ES: true
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Build
+    container: ubuntu:22.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v2
+
+      - name: Setup CI Utils ⚙️
+        run: .github/scripts/utils-install.sh
+
+      - name: Build 🔧
+        run: |
+          npm install
+          .github/scripts/sysdep-install.sh
+          make build
+
+  test:
+    name: Unit Tests
+    container: ubuntu:22.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v2
+
+      - name: Setup CI Utils ⚙️
+        run: .github/scripts/utils-install.sh
+
+      - name: Test 🧪
+        run: |
+          npm install
+          .github/scripts/sysdep-install.sh
+          make test

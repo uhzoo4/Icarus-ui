@@ -1,0 +1,19 @@
+vifm/.config/vifm/vifminfo
+vifm/.config/vifm/vifm-help.txt
+vifm/.config/vifm/vifmimgpdffile
+.directory
+*.zwc
+
+# ignore everything in latte folder except custom layout
+latte
+!latte/.config/latte/Split-Beauty.layout.latte
+vivaldi
+.github
+.vscode
+
+# python cache
+__pycache__/
+*.pyc
+
+# random stuff
+*.zip

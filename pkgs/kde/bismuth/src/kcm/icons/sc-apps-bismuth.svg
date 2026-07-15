@@ -1,0 +1,10 @@
+<!--
+SPDX-FileCopyrightText: 2021 Mikhail Zolotukhin <mail@genda.life>
+SPDX-License-Identifier: CC-BY-4.0
+-->
+<svg version="1.1" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <path d="m204 220.5h-111v-146.5h10v136.5h101v10z" fill="#76A694"/>
+  <path d="m204 220.5h-111v-156.5h-15v171.5h143v-79h-72.5v15h55.5v49z" fill="#879B57"/>
+  <path d="m241 255.5h-183v-211.5h20v191.5h143v-79h-72.791v15h-20l-0.209-35h113v119z" fill="#FFF36B"/>
+  <path d="m266 111.5v169h-233v-261.5h25v236.5h183v-119h-113v74h-25v-99h163z" fill="#A63F3F"/>
+</svg>

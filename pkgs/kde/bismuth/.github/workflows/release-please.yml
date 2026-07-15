@@ -1,0 +1,69 @@
+# SPDX-FileCopyrightText: 2021 Mikhail Zolotukhin <mail@genda.life>
+#
+# SPDX-License-Identifier: MIT
+
+---
+name: release-please
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - name: Release Please 🔖
+        uses: GoogleCloudPlatform/release-please-action@v2
+        id: release
+        with:
+          release-type: node
+          package-name: release-please-action
+
+  publish-artifacts:
+    name: Publish Artifacts
+    runs-on: ubuntu-latest
+    container: ubuntu:22.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    steps:
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v2
+
+      - name: Setup CI Utils ⚙️
+        run: .github/scripts/utils-install.sh
+
+      - name: Build 🔧
+        run: |
+          npm install
+          .github/scripts/sysdep-install.sh
+          cmake -S "." -B "build-debug" -G Ninja \
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DCMAKE_INSTALL_PREFIX="$PWD/binary-debug"
+          cmake --build "build-debug"
+          cmake --install "build-debug"
+
+          cmake -S "." -B "build-release" -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$PWD/binary-release"
+          cmake --build "build-release"
+          cmake --install "build-release"
+
+      - name: Package 📦
+        run: |
+          tar czf binary-debug.tar.gz --directory=binary-debug .
+          tar czf binary-release.tar.gz --directory=binary-release .
+
+      - name: Publish 🎉
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          files: |
+            binary-debug.tar.gz
+            binary-release.tar.gz

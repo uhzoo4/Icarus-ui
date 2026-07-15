@@ -1,0 +1,51 @@
+qml_module(caelestia-services
+    URI Caelestia.Services
+    SOURCES
+        service.cpp
+        serviceref.cpp
+        beattracker.cpp
+        audiocollector.cpp
+        audioprovider.cpp
+        cavaprovider.cpp
+        tickingservice.cpp
+        sensorslib.cpp
+        usagefmt.cpp
+        cpu.cpp
+        gpu.cpp
+        memory.cpp
+        diskinfo.cpp
+        storage.cpp
+        lyriccandidate.cpp
+        lyrics.cpp
+        sessionmanager.cpp
+        sessionmanager.hpp
+        discordipc.cpp
+        discordipc.hpp
+        hyprlandstate.cpp
+        hyprlandstate.hpp
+        keybindsmodel.cpp
+        keybindsmodel.hpp
+        emojidb.cpp
+        emojidb.hpp
+        brightnesswatcher.cpp
+        brightnesswatcher.hpp
+        clipboardmanager.cpp
+        clipboardmanager.hpp
+        schemeloader.cpp
+        schemeloader.hpp
+        palettemanager.cpp
+        palettemanager.hpp
+        dinogame.cpp
+        dinogame.hpp
+    LIBRARIES
+        Qt::DBus
+        Qt::Gui
+        PkgConfig::Pipewire
+        PkgConfig::Aubio
+        PkgConfig::Cava
+        Sensors::Sensors
+        caelestia-core
+        caelestia-config
+        caelestia-internal
+)
+
