@@ -117,6 +117,14 @@ cd Icarus-ui
 bash run.sh
 ```
 
+### 🔄 Updating
+
+If you've already cloned the repository and want to update to the latest code, run the updater script from inside the repository directory:
+
+```bash
+bash update.sh
+```
+
 ---
 
 ## ⚖️ License
