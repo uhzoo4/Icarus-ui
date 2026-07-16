@@ -305,6 +305,28 @@ if [[ -d "${BASE_DIR}/images" ]]; then
     ok "Installed Jux Rofi images"
 fi
 
+# Deploy custom CAVA configurations and themes
+step "Deploying custom CAVA audio visualizer themes..."
+CAVA_DEST_DIR="${HOME}/.config/cava"
+mkdir -p "${CAVA_DEST_DIR}/themes"
+if [[ -d "${REPO_ROOT}/configs/cava" ]]; then
+    cp -rf "${REPO_ROOT}/configs/cava/themes/"* "${CAVA_DEST_DIR}/themes/" 2>/dev/null || true
+    cp -f "${REPO_ROOT}/configs/cava/config" "${CAVA_DEST_DIR}/base_config" 2>/dev/null || true
+    cp -f "${REPO_ROOT}/configs/cava/cava-theme-loader.sh" "${HOME}/.local/bin/cava-theme-loader.sh" 2>/dev/null || true
+    chmod +x "${HOME}/.local/bin/cava-theme-loader.sh" 2>/dev/null || true
+    ok "CAVA theme profiles and loader installed to ~/.local/bin/cava-theme-loader.sh"
+fi
+
+# Deploy Icarus Welcome CLI Dashboard Panel
+step "Deploying Icarus Welcome Dashboard..."
+if [[ -f "${REPO_ROOT}/tools/welcome.sh" ]]; then
+    mkdir -p "${HOME}/.local/bin"
+    cp -f "${REPO_ROOT}/tools/welcome.sh" "${HOME}/.local/bin/icarus-welcome" 2>/dev/null || true
+    chmod +x "${HOME}/.local/bin/icarus-welcome" 2>/dev/null || true
+    ok "Icarus Welcome control panel deployed as 'icarus-welcome'"
+fi
+
+
 # ============================================================================
 # 4. KDE MATERIAL YOU COLORS — LIVE WALLPAPER-ADAPTIVE ENGINE
 # ============================================================================
