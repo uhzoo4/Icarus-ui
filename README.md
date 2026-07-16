@@ -104,6 +104,9 @@ We successfully unified and automated these modules into a single install setup:
 *   **❌ Material You Entrypoint**: Created a `__main__.py` entry point within the color daemon to support automated execution via python module calls on system boot.
 *   **💻 Qt6 Bismuth Compiles**: Configured automated compilation scripts for older window managers to compile Bismuth from source, with a seamless fallback to Krohnkite if running modern Plasma 6.
 *   **🛠️ C++ DBus Screenshot Helper**: Configured CMake scripts to compile the screenshot portal helper against Qt6 DBus libraries to interface with desktop portal APIs.
+*   **🛡️ Strict Bash Hardening**: Hardened all installation scripts against `set -euo pipefail` crashes by safely guarding non-critical aesthetic asset copying (`wlogout`, themes) with `|| true` to prevent forced deployment failures.
+*   **📦 AUR Toolchain Integrity**: Resolved critical `stddef.h`/`size_t` compilation failures during heavy AUR builds (like `qt5-wayland`) by aggressively enforcing `base-devel` kernel header installations prior to AUR helper bootstrapping.
+*   **🎨 CAVA Parser Fixes**: Fixed CAVA audio visualizer crashes by stripping invalid string quotes from INI-style HTML hex color configurations.
 
 ---
 

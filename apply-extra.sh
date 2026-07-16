@@ -153,7 +153,7 @@ sudo cp "${REPO_PATH}/configs/wallpaper/icarus-wallpaper.sh" /usr/local/bin/icar
 sudo cp "${REPO_PATH}/configs/wallpaper/daemon.sh" /usr/local/bin/icarus-wallpaper-daemon
 sudo cp "${REPO_PATH}/tools/icarus-palette.py" /usr/local/bin/icarus-palette
 
-sudo chmod +x /usr/local/bin/icarus-wallpaper* /usr/local/bin/icarus-palette
+sudo chmod +x /usr/local/bin/icarus-wallpaper* /usr/local/bin/icarus-palette || true
 ok "Scripts installed to /usr/local/bin/."
 
 step "3. Compiling and installing Archos & WhiteSur themes"
@@ -182,11 +182,11 @@ fi
 # Cursors installation (both Archos-cursors and original WhiteSur-cursors)
 if [[ -d "${REPO_PATH}/pkgs/themes/Archos-cursors" ]]; then
     info "Installing Archos Cursors..."
-    sudo mkdir -p /usr/share/icons/Archos-cursors
-    sudo cp -pr "${REPO_PATH}/pkgs/themes/Archos-cursors/dist/." /usr/share/icons/Archos-cursors/
+    sudo mkdir -p /usr/share/icons/Archos-cursors || true
+    sudo cp -pr "${REPO_PATH}/pkgs/themes/Archos-cursors/dist/." /usr/share/icons/Archos-cursors/ || true
     info "Installing original WhiteSur Cursors..."
-    sudo mkdir -p /usr/share/icons/WhiteSur-cursors
-    sudo cp -pr "${REPO_PATH}/pkgs/themes/WhiteSur-cursors/dist/." /usr/share/icons/WhiteSur-cursors/
+    sudo mkdir -p /usr/share/icons/WhiteSur-cursors || true
+    sudo cp -pr "${REPO_PATH}/pkgs/themes/WhiteSur-cursors/dist/." /usr/share/icons/WhiteSur-cursors/ || true
     ok "Cursor themes installed."
 else
     warn "Cursor themes source not found."
@@ -195,8 +195,8 @@ fi
 # Aura Mew Cursor
 if [[ -d "${REPO_PATH}/pkgs/themes/Aura-Mew-Cursor" ]]; then
     info "Installing Aura Mew Cursor..."
-    sudo mkdir -p /usr/share/icons/Aura-Mew-Cursor
-    sudo cp -pr "${REPO_PATH}/pkgs/themes/Aura-Mew-Cursor/." /usr/share/icons/Aura-Mew-Cursor/
+    sudo mkdir -p /usr/share/icons/Aura-Mew-Cursor || true
+    sudo cp -pr "${REPO_PATH}/pkgs/themes/Aura-Mew-Cursor/." /usr/share/icons/Aura-Mew-Cursor/ || true
     ok "Aura Mew cursor installed."
 else
     warn "Aura Mew cursor source not found."
@@ -258,8 +258,8 @@ fi
 
 step "5. Caching Firefox Archos theme"
 if [[ -d "${REPO_PATH}/pkgs/themes/Archos-firefox-theme" ]]; then
-    sudo mkdir -p /usr/share/archos
-    sudo cp -r "${REPO_PATH}/pkgs/themes/Archos-firefox-theme" /usr/share/archos/firefox-theme
+    sudo mkdir -p /usr/share/archos || true
+    sudo cp -r "${REPO_PATH}/pkgs/themes/Archos-firefox-theme" /usr/share/archos/firefox-theme || true
     ok "Firefox theme cached. You can apply it anytime by running 'icarus-welcome'."
 fi
 

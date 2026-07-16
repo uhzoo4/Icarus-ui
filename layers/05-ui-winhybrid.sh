@@ -102,7 +102,7 @@ install_pkgs \
 
 log "Installing lock screen, idle management, and power menu..."
 install_pkgs \
-    hyprlock hypridle wlogout
+    hyprlock hypridle
 
 log "Installing screenshot, clipboard, and brightness tools..."
 install_pkgs \

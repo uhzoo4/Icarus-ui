@@ -54,9 +54,10 @@ if command -v dnf &>/dev/null; then
         gettext git unzip npm nodejs stow python3-pip || true
 else
     info "Arch/EndeavourOS system detected. Installing dependencies via pacman..."
-    sudo pacman -S --needed --noconfirm extra-cmake-modules kwin qt6-base cmake gcc \
+    sudo pacman -S --needed --noconfirm base-devel extra-cmake-modules kwin qt6-base cmake gcc \
         kvantum python-pillow python-dbus python-numpy python-magic gettext git unzip \
-        npm nodejs stow plasma-nm plasma-pa kdeplasma-addons kdeconnect ydotool python-pip || true
+        npm nodejs stow plasma-nm plasma-pa kdeplasma-addons kdeconnect ydotool python-pip \
+        quickshell ananicy-cpp || true
 fi
 
 # AUR helper check
@@ -79,7 +80,7 @@ install_aur_pkgs() {
 
 # Install shell, gaming, and ricing dependencies
 info "Checking and installing shell, gaming, and ricing dependencies..."
-install_aur_pkgs quickshell-git ananicy-cpp-git latte-dock-git
+install_aur_pkgs latte-dock-git
 
 if ! command -v dnf &>/dev/null; then
     sudo pacman -S --needed --noconfirm gamemode lib32-gamemode || true

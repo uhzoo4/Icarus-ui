@@ -204,7 +204,8 @@ aur_install google-chrome spotify
 #     GTK settings.ini (adw-gtk3-dark, Bibata-Modern-Ice) but not installed
 #     there since both are AUR-only and paru doesn't exist until this layer.
 # ---------------------------------------------------------------------------
-log "Installing theme packages (adw-gtk-theme, bibata-cursor-theme)..."
+log "Installing theme and visual utility packages (wlogout, adw-gtk-theme, bibata-cursor-theme)..."
+aur_install wlogout
 aur_install adw-gtk-theme
 aur_install bibata-cursor-theme
 
