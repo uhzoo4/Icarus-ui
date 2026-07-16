@@ -13,24 +13,24 @@
                           ░                 ░                
 ```
 
-# ⚡ ICARUS-UI: THE ULTIMATE RICING SUITE ⚡
-**An Elite, Dynamic, Keyboard-Driven KDE Plasma & Hyprland Customization for Arch/EndeavourOS and Fedora**
+# ⚡ ICARUS-UI: THE ULTIMATE DESKTOP SUITE ⚡
+**Elite, Dynamic, Keyboard-Driven KDE Plasma & Hyprland Customization**
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![Distro: EndeavourOS](https://img.shields.io/badge/OS-EndeavourOS-purple.svg?logo=arch-linux&logoColor=white&style=for-the-badge)](#)
 [![Distro: Fedora](https://img.shields.io/badge/OS-Fedora_Linux-blue.svg?logo=fedora&logoColor=white&style=for-the-badge)](#)
 [![Theme: Sweet](https://img.shields.io/badge/Theme-Sweet--KDE-magenta.svg?style=for-the-badge)](#)
 [![Theme: Catppuccin](https://img.shields.io/badge/Theme-Catppuccin-blueviolet.svg?style=for-the-badge)](#)
-[![Theme: Katerial](https://img.shields.io/badge/Theme-Katerial-red.svg?style=for-the-badge)](#)
 
-*Icarus-UI is a state-of-the-art visual suite and hardware-accelerated configuration system. By eating the core assets of 11 premium repositories, it delivers dynamic desktop color-adaptation, keyboard-centric window tiling, custom status widgets, low-latency audio visualizers, and performance optimization profiles.*
+*Icarus-UI is a premium visual layout and system-optimization suite. Featuring real-time color adaptation, keyboard-centric tiling, custom command launchers, and hardware-accelerated profiles, it delivers a smooth desktop experience in a lightweight package.*
 
 </div>
 
 ---
 
-## 📌 The Pinterest Visual Showcase
+## 🎨 Aesthetic Grid Gallery
 
-A high-fidelity preview grid displaying the dynamic aesthetic themes available in this suite:
+Explore the dynamic presets available in this suite:
 
 <table>
   <tr>
@@ -49,7 +49,7 @@ A high-fidelity preview grid displaying the dynamic aesthetic themes available i
     <td width="50%" align="center">
       <b>🏙️ URBAN MIDNIGHT</b><br/>
       <img src="https://raw.githubusercontent.com/ComplexPlatform/KDE-dotfiles/master/previews/urban.png" width="100%" alt="Urban Theme"/><br/>
-      <i>Sleek high-contrast neon purple and blue grids</i>
+      <i>Sleek neon purple and blue grids</i>
     </td>
     <td width="50%" align="center">
       <b>🏔️ FOGGY MOUNTAIN</b><br/>
@@ -57,73 +57,53 @@ A high-fidelity preview grid displaying the dynamic aesthetic themes available i
       <i>Muted forest greens and deep misty greys</i>
     </td>
   </tr>
-  <tr>
-    <td width="50%" align="center">
-      <b>🍀 WILD FLOWERS</b><br/>
-      <img src="https://raw.githubusercontent.com/ComplexPlatform/KDE-dotfiles/master/previews/flowers.png" width="100%" alt="Flowers Theme"/><br/>
-      <i>Vibrant spring colors & colorful status rails</i>
-    </td>
-    <td width="50%" align="center">
-      <b>☯️ NEUTRAL GRAY</b><br/>
-      <img src="https://raw.githubusercontent.com/ComplexPlatform/KDE-dotfiles/master/previews/neutral.png" width="100%" alt="Neutral Theme"/><br/>
-      <i>Minimalist monochrome workspace style</i>
-    </td>
-  </tr>
 </table>
 
 ---
 
-## 🎒 The 11 Stolen Masterpieces ("Defines Worked")
+## 🌀 Live & Interactive Animations
 
-We successfully extracted, tuned, and modularized all components of these repositories into a single deployable installer:
-
-### 1. 🎨 The Colors & Styles
-*   **Sweet-KDE Theme**: The base desktop look, providing deep purple-pink gradients and highly transparent panel configurations.
-*   **Catppuccin/KDE**: Deploys all 4 flavors (Mocha, Macchiato, Frappé, Latte) paired with Modern & Classic Aurorae decorations.
-*   **Katerial Theme**: Google Material Design Kvantum application structures, window borders, custom Konsole profile, and SDDM login screen.
-*   **KDE Material You Colors**: A background color daemon that extracts color palettes from your active wallpaper using Python-based Material Color Utilities.
-
-### 2. 🖥️ The Layouts & Panels
-*   **ComplexPlatform dotfiles**: Integrates 6 GTK themes, 3 floating Latte Dock layouts, and 6 custom JSON color scheme profiles.
-*   **Blacksuan19 / Dotfiles**: Keyboard-driven tiling window rules, custom global shortcuts, and stowed terminal tool profiles.
-*   **Caelestia Shell**: A custom Quickshell QML panel overlay built on top of Qt6 and custom C++ compositor bridges.
-*   **KDE Control Station**: An applet for your status panel providing Night Light controls, battery info, media controls, and custom command launcher bindings.
-
-### 3. ⚙️ Tiling & Backups
-*   **Bismuth Tiling Engine**: Compiled TypeScript window placement scripts that hook directly into KWin to provide automatic screen tiling (with Krohnkite fallback).
-*   **Konsave Profile Manager**: The snapshot engine that allows you to instantly back up or swap between desktop setups.
-*   **awesome-rices**: Placed as a repository inspiration reference.
+*   **🎬 Live Video Wallpaper Daemon**: Play smooth, loopable animated backgrounds (`.mp4`, `.gif`). Features automatic power-saving loops that pause video playback when games or fullscreen windows are focused.
+*   **🍏 Interactive Waybar Dock**: A floating, glassmorphic application dock with active tasks that zoom, scale, and bounce dynamically on hover or launch.
+*   **🎵 CAVA Audio Waveforms**: A real-time terminal audio visualizer loaded with gradient profiles that synchronize to desktop styles (Sweet, Catppuccin, Katerial).
+*   **👾 Animated GRUB Loaders**: Custom high-fidelity boot menus (Retroboot & Pochita animations) configured automatically on startup.
 
 ---
 
-## 🛠️ Specialized Interactive Ricing Modules
+## 🎒 Core Integrations ("Defines Worked")
 
-### 🖥️ Master CLI Dashboard (`icarus-welcome`)
-Run `icarus-welcome` in your terminal to trigger a unified control panel:
-*   **🎮 Game Mode Toggle**: Instantly reconfigure kernel variables (HugePages, split-lock, CPU scheduling).
-*   **🎨 Style Switcher**: Hot-reload Sweet, Catppuccin, or Katerial themes.
-*   **🖼️ Wallpaper Selector**: Pick from the database of **4,646 harvested wallpapers** (housed in `STEAL/WALLPAPER/`).
-*   **🔄 Snapshot Manager**: Save and restore layout backups via Konsave.
+We successfully unified and automated these modules into a single install setup:
 
-### 🐱 Terminal Welcome visualizer (`random_image.sh`)
-*   When opening a terminal, the script randomly grabs one of the 4,646 wallpapers/GIFs and renders it on the left using Kitty's GPU image protocol (`icat`), displaying system specs on the right.
+### 1. Theming & Styling
+*   **Sweet-KDE**: Deep purple-pink gradients and transparent panel configurations.
+*   **Catppuccin/KDE**: Deploys all 4 pastel flavors paired with modern window decorations.
+*   **Katerial Theme**: Flat Google Material Design Kvantum application styles, custom Konsole profile, and SDDM login panel.
+*   **Material You Engine**: A background color generator that dynamically updates your desktop themes matching your wallpaper colors in real-time.
 
-### 🎵 CAVA Color Loader (`cava-theme-loader.sh`)
-*   Merges your visualizer settings with custom color profiles (Sweet Gradient, Catppuccin Pastel, Katerial Neon, and Ice Blue) and launches `cava`.
-
-### 🔗 Telegram Live Color Sync (`plasma2telegram`)
-*   A background user service that automatically recompiles and hot-reloads your Telegram Desktop application theme to match the system palette when your wallpaper changes.
+### 2. Layouts & Compilations
+*   **ComplexPlatform GTK**: Includes 6 custom color schemes, floating docks, and neofetch/spicetify profiles.
+*   **Blacksuan19 Dotfiles**: Keyboard-driven tiling window layouts and custom global hotkeys.
+*   **Caelestia Shell**: A custom Quickshell QML panel configuration using custom C++ compositor bridges.
+*   **Bismuth Tiling**: Auto-tiling script that hooks into KWin for automatic grid layouts (with Krohnkite fallback).
+*   **Konsave Backups**: Allows you to instantly save, load, and restore visual system snapshots.
 
 ---
 
-## ⚔️ The Wars We Fought: Challenges & Fixes
+## 🛠️ Specialized Script Utilities
 
-Ricing to this level comes with breaking changes. Here are the technical hurdles we resolved during the construction of this suite:
+*   **`icarus-welcome`**: An interactive CLI dashboard to toggle gaming profiles, launch color switchers, select wallpapers, and restore layout backups.
+*   **`random_image.sh`**: Kitty-integrated visual greeting script displaying random wallpapers and system info on shell launch.
+*   **`cava-theme-loader.sh`**: Dynamic audio visualizer gradient theme picker.
+*   **`plasma2telegram`**: Automatically syncs your Telegram Desktop themes with the system accent colors.
 
-*   **⚠️ The PEP 668 System-pip Blockade**: Modern Linux distros (including EndeavourOS/Arch) lock down global pip packages to protect system packages. We bypassed this safely by building a target folder structure (`~/.local/lib/python-icarus`) and injecting it dynamically into the daemon's runtime `PYTHONPATH`, avoiding external package errors.
-*   **❌ Material You Missing Entry Point**: The original `kde-material-you-colors` daemon lacked a `__main__.py` inside its package directory, making `python -m` execution crash. We wrote a custom redirection entry point to resolve this.
-*   **💻 Qt6 Compilation & Bismuth Compatibility**: Bismuth was originally designed for older Qt5/KF5 window compositors. We constructed a dual-engine installer that attempts a TypeScript CMake build but automatically deploys **Krohnkite** as an active fallback if on Plasma 6.
-*   **🛠️ C++ DBus Screenshot Helper Compilation**: Slideshows and dynamic wallpaper plugins require screenshot captures via DBus portals. We isolated the native C++ helper, configured CMake to compile it against Qt6-DBus, and automated the build to deploy it to `/usr/bin/` during install.
+---
+
+## ⚔️ Challenges Resolved (Developer Logs)
+
+*   **⚠️ PEP 668 Pip Blockade**: Resolved modern Linux system pip lockouts by redirecting Python packages to user-local directory structures (`~/.local/lib/python-icarus`) and dynamically injecting runtime `PYTHONPATH` variables.
+*   **❌ Material You Entrypoint**: Created a `__main__.py` entry point within the color daemon to support automated execution via python module calls on system boot.
+*   **💻 Qt6 Bismuth Compiles**: Configured automated compilation scripts for older window managers to compile Bismuth from source, with a seamless fallback to Krohnkite if running modern Plasma 6.
+*   **🛠️ C++ DBus Screenshot Helper**: Configured CMake scripts to compile the screenshot portal helper against Qt6 DBus libraries to interface with desktop portal APIs.
 
 ---
 
@@ -138,6 +118,10 @@ bash run.sh
 ```
 
 ---
+
+## ⚖️ License
+
+This project is open-source software licensed under the [MIT License](LICENSE).
 
 <div align="center">
 <b>Icarus-UI Configuration Suite</b> • Optimized to the limits. Enjoy the flight.
