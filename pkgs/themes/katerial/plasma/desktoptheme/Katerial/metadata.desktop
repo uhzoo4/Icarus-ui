@@ -1,0 +1,20 @@
+[Desktop Entry]
+Name=Katerial
+
+X-KDE-PluginInfo-Author=Jennifer Dupaquier
+X-KDE-PluginInfo-Email=jenn.mawet@gmail.com
+X-KDE-PluginInfo-Name=Katerial
+X-KDE-PluginInfo-Version=20260523
+X-KDE-PluginInfo-Website=https://github.com/jmawet/katerial
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPLv3
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Version=1.0
+
+
+[ContrastEffect]
+enabled=false
+contrast=0.2
+intensity=0.4
+saturation=1.7

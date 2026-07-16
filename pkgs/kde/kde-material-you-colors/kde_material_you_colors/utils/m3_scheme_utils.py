@@ -1,0 +1,327 @@
+import logging
+import os
+import json
+from PIL import Image
+
+from materialyoucolor.hct import Hct
+from materialyoucolor.dynamiccolor.material_dynamic_colors import MaterialDynamicColors
+from materialyoucolor.scheme.scheme_tonal_spot import SchemeTonalSpot
+from materialyoucolor.scheme.scheme_expressive import SchemeExpressive
+from materialyoucolor.scheme.scheme_fruit_salad import SchemeFruitSalad
+from materialyoucolor.scheme.scheme_monochrome import SchemeMonochrome
+from materialyoucolor.scheme import *
+from materialyoucolor.palettes.tonal_palette import TonalPalette
+from materialyoucolor.dynamiccolor.dynamic_color import DynamicColor
+from kde_material_you_colors.config import Configs
+from kde_material_you_colors.utils.color_utils import rgb2hex
+from kde_material_you_colors.utils.color_utils import argbFromHex
+from kde_material_you_colors.utils.color_utils import hexFromArgb
+from kde_material_you_colors import settings
+from kde_material_you_colors.utils import color_utils
+from kde_material_you_colors.utils import notify
+from kde_material_you_colors.utils.wallpaper_utils import WallpaperReader
+from kde_material_you_colors.utils.extra_image_utils import sourceColorsFromImage
+from kde_material_you_colors.schemeconfigs import ThemeConfig
+from kde_material_you_colors.utils.math_utils import clip
+from kde_material_you_colors.utils.color_utils import static_color
+
+
+def dict_to_hex(dark_scheme):
+    out = {}
+    # print(dark_scheme)
+    for key, [r, g, b, a] in dark_scheme.items():
+        out.update({key: rgb2hex(r, g, b)})
+    return out
+
+
+def palette_to_hex(palette: TonalPalette):
+    tones = []
+    for x in range(100):
+        tones.append(hexFromArgb((palette.tone(x))))
+    return tones
+
+
+schemes = [
+    SchemeContent,
+    SchemeExpressive,
+    SchemeFidelity,
+    SchemeMonochrome,
+    SchemeNeutral,
+    SchemeTonalSpot,
+    SchemeVibrant,
+    SchemeRainbow,
+    SchemeFruitSalad,
+]
+
+
+def getScheme(scheme_variant, source, isDark, contrastLevel, spec):
+    scheme_class = schemes[scheme_variant]
+    return scheme_class(
+        source_color_hct=source,
+        is_dark=isDark,
+        contrast_level=contrastLevel,
+        spec_version=spec if spec is not None else "2025",
+    )
+
+
+def getColors(scheme, chroma_mult, tone_mult, is_dark):
+    colors = {}
+    for color in vars(MaterialDynamicColors).keys():
+        color_name: DynamicColor = getattr(MaterialDynamicColors, color)
+        if hasattr(color_name, "get_hct"):  # is a color
+            hct = color_name.get_hct(scheme)
+            is_bg = color_name.is_background is True
+
+            if is_bg:
+                hct.tone = int(
+                    hct.tone * clip(tone_mult, 0.0 if is_dark else 0.5, 1.5, 1)
+                )
+
+            boost_all = True
+            if boost_all or is_bg:
+                hct.chroma = hct.chroma * clip(chroma_mult, 0, 10, 1)
+            argb = hct.to_int()
+            colors[color] = hexFromArgb(argb)
+    return colors
+
+
+def themeFromSourceColor(
+    seed_color,
+    scheme_variant=5,
+    chroma_mult=1,
+    tone_mult=1,
+    contrast_level=0,
+    spec_version="2025",
+):
+    source = Hct.from_int(seed_color)
+    scheme = getScheme(scheme_variant, source, False, contrast_level, spec_version)
+    schemeDark = getScheme(scheme_variant, source, True, contrast_level, spec_version)
+    colorsLight = getColors(scheme, chroma_mult, tone_mult, False)
+    colorsDark = getColors(schemeDark, chroma_mult, tone_mult, True)
+    # Base text states taken from Breeze Color Scheme
+    base_text_states = [
+        {"name": "link", "value": 4280910009, "hex": "#2980b9"},
+        {"name": "visited", "value": 4288371126, "hex": "#9b59b6"},
+        {"name": "negative", "value": 4292494419, "hex": "#da4453"},
+        {"name": "neutral", "value": 4294341632, "hex": "#f67400"},
+        {"name": "positive", "value": 4280790624, "hex": "#27ae60"},
+    ]
+
+    cc = {}
+    seed_color_hex = hexFromArgb(seed_color)
+
+    for color in base_text_states:
+        cc[color["name"]] = {
+            "source": seed_color_hex,
+            "value": color["hex"],
+            "light": static_color(scheme, color["value"], True),
+            "dark": static_color(schemeDark, color["value"], True),
+        }
+
+    out = {
+        "source": seed_color,
+        "schemes": {"light": colorsLight, "dark": colorsDark},
+        "palettes": {
+            "primary": palette_to_hex(scheme.primary_palette),
+            "secondary": palette_to_hex(scheme.secondary_palette),
+            "tertiary": palette_to_hex(scheme.tertiary_palette),
+            "neutral": palette_to_hex(scheme.neutral_palette),
+            "neutralVariant": palette_to_hex(scheme.neutral_variant_palette),
+            "error": palette_to_hex(scheme.error_palette),
+        },
+        "customColors": cc,
+    }
+    return out
+
+
+def get_material_you_colors(
+    wallpaper_data,
+    ncolor,
+    source_type,
+    scheme_variant,
+    chroma_mult,
+    tone_mult,
+    contrast_level,
+    spec_version,
+):
+    """Get material you colors from wallpaper or hex color using material-color-utility
+
+    Args:
+        wallpaper_data (tuple): wallpaper (type and data)
+        ncolor (int): Alternative color number flag passed to material-color-utility
+        source_type (str): image or color string passed to material-color-utility
+
+    Returns:
+        str: string data from python-material-color-utilities
+    """
+
+    try:
+        source_color = 0
+        if source_type == "image":
+            # open image file
+            img = Image.open(wallpaper_data)
+            # resize image proportionally
+            basewidth = 128
+            wpercent = basewidth / float(img.size[0])
+            hsize = int((float(img.size[1]) * float(wpercent)))
+            img = img.resize((basewidth, hsize), Image.Resampling.LANCZOS)
+            source_colors = sourceColorsFromImage(img)
+            img.close()
+            seed_color = source_colors[0]
+        else:
+            seed_color = argbFromHex(wallpaper_data)
+            source_colors = [seed_color]
+
+        best_colors = [hexFromArgb(color) for color in source_colors]
+
+        # Given the best colors and the alt color index
+        # return a selected color or the first one if index is out of bounds
+        totalColors = len(best_colors)
+        if ncolor is None or ncolor > totalColors - 1:
+            ncolor = 0
+        source_color = hexFromArgb(source_colors[ncolor])
+        theme = themeFromSourceColor(
+            argbFromHex(source_color),
+            scheme_variant,
+            chroma_mult,
+            tone_mult,
+            contrast_level,
+            spec_version,
+        )
+
+        materialYouColors = {
+            "best": best_colors,
+            "seed": {
+                "index": ncolor,
+                "color": hexFromArgb(theme["source"]),
+            },
+            "schemes": {
+                "light": theme["schemes"]["light"],
+                "dark": theme["schemes"]["dark"],
+            },
+            "palettes": {
+                "primary": theme["palettes"]["primary"],
+                "secondary": theme["palettes"]["secondary"],
+                "tertiary": theme["palettes"]["tertiary"],
+                "neutral": theme["palettes"]["neutral"],
+                "neutralVariant": theme["palettes"]["neutralVariant"],
+                "error": theme["palettes"]["error"],
+            },
+            "custom": theme["customColors"],
+        }
+        return materialYouColors
+
+    except Exception as e:
+        error = f"Error trying to get colors from {wallpaper_data}: {e}"
+        logging.exception(error)
+        notify.send_notification("Could not get colors", error)
+        return None
+
+
+def get_color_schemes(
+    wallpaper: WallpaperReader,
+    ncolor=None,
+    scheme_variant=5,
+    chroma_mult=1.0,
+    tone_mult=1.0,
+    contrast_level=0.0,
+    spec_version="2025",
+):
+    """Display best colors, allow to select alternative color,
+    and make and apply color schemes for dark and light mode
+
+    Args:
+        wallpaper (tuple): wallpaper (type and data)
+        ncolor (int): Alternative color number flag passed to material-color-utility
+
+    Returns:
+
+    """
+    if wallpaper is None:
+        return
+    materialYouColors = None
+    wallpaper_type = wallpaper.type
+    wallpaper_data = wallpaper.source
+    if wallpaper_type in ["image", "screenshot"] and (
+        wallpaper_data and os.path.exists(wallpaper_data)
+    ):
+        if os.path.isdir(wallpaper_data):
+            logging.error(f'"{wallpaper_data}" is a directory, aborting')
+            return
+        materialYouColors = get_material_you_colors(
+            wallpaper_data,
+            ncolor,
+            "image",
+            scheme_variant,
+            chroma_mult,
+            tone_mult,
+            contrast_level,
+            spec_version,
+        )
+
+    elif wallpaper_type == "color" and wallpaper_data:
+        color = color_utils.color2hex(wallpaper_data)
+        materialYouColors = get_material_you_colors(
+            color,
+            ncolor,
+            wallpaper_type,
+            scheme_variant,
+            chroma_mult,
+            tone_mult,
+            contrast_level,
+            spec_version,
+        )
+
+    if materialYouColors is not None:
+        if len(materialYouColors["best"]) > 1:
+            best_colors = f"Best colors: {settings.TERM_STY_BOLD}"
+            for i, color in enumerate(materialYouColors["best"]):
+                rgb = color_utils.hex2rgb(color)
+                preview = f"\033[38;2;{rgb[0]};{rgb[1]};{rgb[2]};1m{color} \033[0m"
+                best_colors += (
+                    f"{settings.TERM_COLOR_DEF+settings.TERM_STY_BOLD}{i}:{preview}"
+                )
+            logging.info(best_colors[:-5])
+
+        seed = materialYouColors["seed"]
+        sedColor = seed["color"]
+        seedNo = seed["index"]
+        rgb = color_utils.hex2rgb(sedColor)
+        preview = f"\033[38;2;{rgb[0]};{rgb[1]};{rgb[2]};1m{sedColor}\033[0m"
+        logging.info(
+            f"Using seed: {settings.TERM_COLOR_DEF+settings.TERM_STY_BOLD}{seedNo}:{preview}"
+        )
+        return materialYouColors
+
+
+def export_schemes(
+    theme: ThemeConfig,
+    config: Configs,
+    wallpaper: WallpaperReader,
+    dark_light: None | bool,
+):
+    """Export generated schemes to MATERIAL_YOU_COLORS_JSON
+
+    Args:
+        schemes (ThemeConfig): generated color schemes
+    """
+    colors = theme.get_material_schemes()
+    colors.update(
+        {
+            "pywal": {
+                "light": theme.get_wal_light_scheme(),
+                "dark": theme.get_wal_dark_scheme(),
+            },
+            "wallpaper": {
+                "type": wallpaper.type,
+                "data": wallpaper.source,
+            },
+            "light": dark_light,
+            "config": config.options,
+        }
+    )
+
+    with open(
+        settings.MATERIAL_YOU_COLORS_JSON, "w", encoding="utf8"
+    ) as material_you_colors:
+        json.dump(colors, material_you_colors, indent=4, ensure_ascii=False)
