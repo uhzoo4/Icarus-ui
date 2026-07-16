@@ -580,6 +580,79 @@ if [[ -d "${REPO_ROOT}/configs/wallpaper/references" ]]; then
 fi
 
 # ============================================================================
+# 10b. DEPLOYING TELEGRAM SYNC, BROWSER INTERCEPTORS, AND TERMINAL WELCOME
+# ============================================================================
+step "10b. Installing specialized ricing modules (Telegram colors, browser hooks, terminal welcome)..."
+
+# 1. Telegram Color Sync (plasma2telegram)
+TEL_SRC="${REPO_ROOT}/pkgs/kde/plasma2telegram"
+if [[ -d "$TEL_SRC" ]]; then
+    info "Installing Telegram dynamic color sync module..."
+    mkdir -p "${HOME}/.local/share/plasma2telegram"
+    cp -r "${TEL_SRC}/"* "${HOME}/.local/share/plasma2telegram/"
+    
+    # Create systemd user service for Telegram color sync
+    mkdir -p "${HOME}/.config/systemd/user"
+    cat > "${HOME}/.config/systemd/user/plasma2telegram.service" << 'SERVICEEOF'
+[Unit]
+Description=KDE Plasma to Telegram Theme Synchronizer
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/.local/share/plasma2telegram/plasma2telegram.py --template-dark %h/.local/share/plasma2telegram/material-template-dark.tdesktop-theme --template-light %h/.local/share/plasma2telegram/material-template-light.tdesktop-theme --output %h/.local/state/plasma2telegram/plasma-auto.tdesktop-theme --watch
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=graphical-session.target
+SERVICEEOF
+    systemctl --user daemon-reload
+    systemctl --user enable plasma2telegram.service 2>/dev/null || true
+    ok "plasma2telegram service successfully configured."
+fi
+
+# 2. Browser interceptor protocol handler (alist-handler)
+if [[ -f "${REPO_ROOT}/tools/alist-handler" ]]; then
+    info "Installing Alist media player URL interceptor..."
+    mkdir -p "${HOME}/.local/bin"
+    cp -f "${REPO_ROOT}/tools/alist-handler" "${HOME}/.local/bin/"
+    chmod +x "${HOME}/.local/bin/alist-handler"
+    
+    # Copy desktop file and set default handlers
+    mkdir -p "${HOME}/.local/share/applications"
+    if [[ -f "${REPO_ROOT}/configs/apps/alist-player.desktop" ]]; then
+        cp -f "${REPO_ROOT}/configs/apps/alist-player.desktop" "${HOME}/.local/share/applications/"
+        if command -v xdg-mime &>/dev/null; then
+            xdg-mime default alist-player.desktop x-scheme-handler/mpv 2>/dev/null || true
+            xdg-mime default alist-player.desktop x-scheme-handler/vlc 2>/dev/null || true
+            xdg-mime default alist-player.desktop x-scheme-handler/potplayer 2>/dev/null || true
+        fi
+    fi
+    ok "Alist media protocol handler registered."
+fi
+
+# 3. Terminal welcome image (random_image.sh)
+if [[ -f "${REPO_ROOT}/tools/random_image.sh" ]]; then
+    info "Installing terminal welcome visualizer..."
+    mkdir -p "${HOME}/.local/bin"
+    cp -f "${REPO_ROOT}/tools/random_image.sh" "${HOME}/.local/bin/"
+    chmod +x "${HOME}/.local/bin/random_image.sh"
+    
+    # Append to .bashrc to run on shell startup
+    if ! grep -q "random_image.sh" "${HOME}/.bashrc" 2>/dev/null; then
+        cat >> "${HOME}/.bashrc" << 'EOF'
+
+# Icarus terminal visual greeting (kitty random wallpaper logo + fastfetch)
+if [[ -f "${HOME}/.local/bin/random_image.sh" ]]; then
+    bash "${HOME}/.local/bin/random_image.sh"
+fi
+EOF
+    fi
+    ok "Terminal welcome script added to ~/.bashrc"
+fi
+
+# ============================================================================
 # 11. KONSAVE SAFETY SNAPSHOT
 # ============================================================================
 step "11. Creating Konsave safety snapshot..."

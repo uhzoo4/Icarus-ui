@@ -32,6 +32,8 @@ chmod +x "${REPO_PATH}/configs/bootloader/install.sh" || true
 chmod +x "${REPO_PATH}/tools/icarus-palette.py" || true
 chmod +x "${REPO_PATH}/tools/system_core.sh" || true
 chmod +x "${REPO_PATH}/tools/welcome.sh" || true
+chmod +x "${REPO_PATH}/tools/random_image.sh" || true
+chmod +x "${REPO_PATH}/tools/alist-handler" || true
 ok "All scripts are executable."
 
 step "2. Selecting components to deploy"
