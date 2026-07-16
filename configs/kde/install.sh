@@ -50,13 +50,13 @@ step "1. Checking and installing dependencies..."
 if command -v dnf &>/dev/null; then
     info "Fedora system detected. Installing dependencies via dnf..."
     sudo dnf install -y qt6-qtbase-devel kwin-devel extra-cmake-modules cmake gcc-c++ \
-        qt-style-kvantum python3-pillow python3-dbus gettext git unzip npm nodejs stow \
-        python3-pip || true
+        qt-style-kvantum python3-pillow python3-dbus python3-numpy python3-magic \
+        gettext git unzip npm nodejs stow python3-pip || true
 else
     info "Arch/EndeavourOS system detected. Installing dependencies via pacman..."
     sudo pacman -S --needed --noconfirm extra-cmake-modules kwin qt6-base cmake gcc \
-        kvantum python-pillow python-dbus gettext git unzip npm nodejs stow plasma-nm \
-        plasma-pa kdeplasma-addons kdeconnect ydotool python-pip || true
+        kvantum python-pillow python-dbus python-numpy python-magic gettext git unzip \
+        npm nodejs stow plasma-nm plasma-pa kdeplasma-addons kdeconnect ydotool python-pip || true
 fi
 
 # AUR helper check
@@ -313,9 +313,9 @@ MATYU_SRC="${REPO_ROOT}/pkgs/kde/kde-material-you-colors"
 if [[ -d "$MATYU_SRC" ]]; then
     # Install Python dependencies
     info "Installing Python dependencies for Material You Colors..."
-    pip install --break-system-packages material-color-utilities 2>/dev/null \
-        || pip install material-color-utilities 2>/dev/null \
-        || warn "Could not install material-color-utilities via pip."
+    pip install --break-system-packages materialyoucolor python-magic 2>/dev/null \
+        || pip install materialyoucolor python-magic 2>/dev/null \
+        || warn "Could not install materialyoucolor via pip."
 
     # Install the Python module itself
     if [[ -d "${MATYU_SRC}/kde_material_you_colors" ]]; then
@@ -357,6 +357,24 @@ SERVICEEOF
     systemctl --user daemon-reload
     systemctl --user enable kde-material-you-colors.service 2>/dev/null || true
     ok "Material You Colors systemd service created and enabled."
+
+    # Compiling Screenshot Helper for Material You Colors
+    step "4b. Compiling and installing Material You Screenshot Helper..."
+    HELPER_DIR="${MATYU_SRC}/screenshot_helper"
+    if [[ -d "$HELPER_DIR" ]]; then
+        info "Compiling screenshot helper..."
+        BUILD_DIR="${HELPER_DIR}/build"
+        rm -rf "$BUILD_DIR"
+        mkdir -p "$BUILD_DIR"
+        cd "$BUILD_DIR"
+        if cmake .. -DCMAKE_INSTALL_PREFIX=/usr 2>/dev/null; then
+            make -j$(nproc)
+            sudo make install
+            ok "Screenshot helper compiled and installed!"
+        else
+            warn "Screenshot helper compilation failed."
+        fi
+    fi
 fi
 
 # ============================================================================
