@@ -6,7 +6,7 @@
 
 <div align="center">
 
-# 🌈 Bismuth 🌈
+# ⚡ Bismuth ⚡
 
 #### Making tiling window management easy. On KDE Plasma.
 
