@@ -132,7 +132,7 @@ step "1. Installing system dependencies"
 info "Installing core desktop applications and utilities..."
 install_pkgs \
     hyprland waybar rofi-wayland kitty dolphin dunst swaybg \
-    hyprlock hypridle wlogout wl-clipboard cliphist \
+    hyprlock hypridle wl-clipboard cliphist \
     brightnessctl playerctl fastfetch cava pavucontrol \
     jq pamixer libnotify sassc ffmpeg socat \
     starship eza bat zoxide fzf ripgrep fd gum \
@@ -140,7 +140,7 @@ install_pkgs \
 
 info "Installing extra packages..."
 install_aur_pkgs \
-    eww-wayland adw-gtk-theme bibata-cursor-theme \
+    wlogout eww-wayland adw-gtk-theme bibata-cursor-theme \
     swayosd-git wl-clip-persist xfce-polkit waypaper \
     helium-browser-bin discord spotify mpvpaper \
     noctalia-shell caelestia-shell caelestia-cli || true
