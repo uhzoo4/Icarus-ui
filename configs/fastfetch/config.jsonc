@@ -4,7 +4,7 @@
         "source": "~/.config/fastfetch/logo.txt",
         "type": "file",
         "color": {
-            "1": "blue"
+            "1": "magenta"
         },
         "padding": {
             "top": 1,
@@ -15,8 +15,8 @@
     "display": {
         "separator": "  ",
         "color": {
-            "keys": "blue",
-            "title": "blue"
+            "keys": "magenta",
+            "title": "magenta"
         }
     },
     "modules": [
@@ -27,7 +27,7 @@
         },
         {
             "type": "separator",
-            "string": "─────────────────────────────"
+            "string": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         },
         {
             "type": "os",
@@ -55,7 +55,7 @@
         },
         {
             "type": "separator",
-            "string": "─────────────────────────────"
+            "string": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         },
         {
             "type": "de",
@@ -67,11 +67,19 @@
         },
         {
             "type": "wmtheme",
-            "key": " 󰏘 Theme"
+            "key": " 󰏘 WM Theme"
+        },
+        {
+            "type": "theme",
+            "key": " 󰉼 Theme"
         },
         {
             "type": "icons",
             "key": " 󰀻 Icons"
+        },
+        {
+            "type": "cursor",
+            "key": " 󰇀 Cursor"
         },
         {
             "type": "terminal",
@@ -83,7 +91,11 @@
         },
         {
             "type": "separator",
-            "string": "─────────────────────────────"
+            "string": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        },
+        {
+            "type": "display",
+            "key": " 󰍃 Display"
         },
         {
             "type": "cpu",
@@ -109,7 +121,7 @@
         },
         {
             "type": "separator",
-            "string": "─────────────────────────────"
+            "string": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         },
         {
             "type": "colors",

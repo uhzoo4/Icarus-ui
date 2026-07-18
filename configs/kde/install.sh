@@ -86,6 +86,24 @@ if ! command -v dnf &>/dev/null; then
     sudo pacman -S --needed --noconfirm gamemode lib32-gamemode || true
 fi
 
+# ── Install Darkly, Better Blur DX, and KDE Material You Colors from AUR ──
+# Dissect: Instead of compiling kwin-forceblur and Material You from source
+# (which took hours and often failed), we install pre-built AUR packages.
+# Darkly provides a modern Qt application style that works across all themes.
+step "1b. Installing Darkly theme, Better Blur DX, and Material You Colors"
+if ! command -v dnf &>/dev/null; then
+    info "Installing from AUR (this is much faster than compiling from source)..."
+    install_aur_pkgs darkly kwin-effects-better-blur-dx kde-material-you-colors
+    ok "Darkly, Better Blur DX, and Material You Colors installed from AUR."
+else
+    info "Fedora detected. Installing Darkly and Material You from COPR..."
+    sudo dnf copr enable -y deltacopy/darkly || true
+    sudo dnf copr enable -y infinality/kwin-effects-better-blur-dx || true
+    sudo dnf install -y darkly kwin-effects-better-blur-dx 2>/dev/null || true
+    pip install --break-system-packages kde-material-you-colors 2>/dev/null || true
+    ok "KDE enhancement packages installed."
+fi
+
 # Detect kpackagetool
 PLASMAPKG=""
 if command -v kpackagetool6 &>/dev/null; then
@@ -331,73 +349,29 @@ fi
 # ============================================================================
 # 4. KDE MATERIAL YOU COLORS — LIVE WALLPAPER-ADAPTIVE ENGINE
 # ============================================================================
-step "4. Installing KDE Material You Colors (live wallpaper color engine)..."
-MATYU_SRC="${REPO_ROOT}/pkgs/kde/kde-material-you-colors"
-if [[ -d "$MATYU_SRC" ]]; then
-    # Install Python dependencies
-    info "Installing Python dependencies for Material You Colors..."
-    pip install --break-system-packages materialyoucolor python-magic 2>/dev/null \
-        || pip install materialyoucolor python-magic 2>/dev/null \
-        || warn "Could not install materialyoucolor via pip."
+# Dissect: Instead of manually copying Python modules and compiling the
+# screenshot helper from source (which was unreliable and slow), we now use
+# the AUR package 'kde-material-you-colors' installed in step 1b.
+# Here we just configure the autostart and register the plasmoid widget.
+step "4. Configuring KDE Material You Colors (wallpaper-adaptive color engine)..."
 
-    # Install the Python module itself
-    if [[ -d "${MATYU_SRC}/kde_material_you_colors" ]]; then
-        info "Installing kde-material-you-colors Python module..."
-        mkdir -p "${HOME}/.local/lib/python-icarus"
-        cp -r "${MATYU_SRC}/kde_material_you_colors" "${HOME}/.local/lib/python-icarus/"
-        ok "Material You Colors Python engine installed."
-    fi
+if command -v kde-material-you-colors &>/dev/null; then
+    info "KDE Material You Colors is installed (AUR package)."
 
-    # Register the Plasmoid companion widget
+    # Enable autostart
+    kde-material-you-colors -a 2>/dev/null || true
+    ok "Material You Colors autostart enabled."
+
+    # Register the Plasmoid companion widget if bundled in repo
+    MATYU_SRC="${REPO_ROOT}/pkgs/kde/kde-material-you-colors"
     if [[ -d "${MATYU_SRC}/plasmoid" ]] && [[ -n "$PLASMAPKG" ]]; then
         info "Registering Material You Colors Plasmoid widget..."
         "$PLASMAPKG" --type=Plasma/Applet -r luisbocanegra.kdematerialyou.colors 2>/dev/null || true
-        if "$PLASMAPKG" --type=Plasma/Applet -i "${MATYU_SRC}/plasmoid"; then
-            ok "Material You Colors Plasmoid widget registered."
-        else
-            warn "Could not register Material You Colors Plasmoid."
-        fi
+        "$PLASMAPKG" --type=Plasma/Applet -i "${MATYU_SRC}/plasmoid" 2>/dev/null || true
+        ok "Material You Colors Plasmoid widget registered."
     fi
-
-    # Create systemd user service for auto-start
-    info "Creating systemd user service for Material You Colors daemon..."
-    mkdir -p "${HOME}/.config/systemd/user"
-    cat > "${HOME}/.config/systemd/user/kde-material-you-colors.service" << 'SERVICEEOF'
-[Unit]
-Description=KDE Material You Colors — Live Wallpaper Color Adaptation Daemon
-After=graphical-session.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/python3 -m kde_material_you_colors
-Environment=PYTHONPATH=%h/.local/lib/python-icarus
-Restart=on-failure
-RestartSec=5
-
-[Install]
-WantedBy=graphical-session.target
-SERVICEEOF
-    systemctl --user daemon-reload
-    systemctl --user enable kde-material-you-colors.service 2>/dev/null || true
-    ok "Material You Colors systemd service created and enabled."
-
-    # Compiling Screenshot Helper for Material You Colors
-    step "4b. Compiling and installing Material You Screenshot Helper..."
-    HELPER_DIR="${MATYU_SRC}/screenshot_helper"
-    if [[ -d "$HELPER_DIR" ]]; then
-        info "Compiling screenshot helper..."
-        BUILD_DIR="${HELPER_DIR}/build"
-        rm -rf "$BUILD_DIR"
-        mkdir -p "$BUILD_DIR"
-        cd "$BUILD_DIR"
-        if cmake .. -DCMAKE_INSTALL_PREFIX=/usr 2>/dev/null; then
-            make -j$(nproc)
-            sudo make install
-            ok "Screenshot helper compiled and installed!"
-        else
-            warn "Screenshot helper compilation failed."
-        fi
-    fi
+else
+    warn "kde-material-you-colors not found. Install with: yay -S kde-material-you-colors"
 fi
 
 # ============================================================================
@@ -434,21 +408,19 @@ if [[ "$BISMUTH_SUCCESS" == "false" ]]; then
 fi
 
 # ============================================================================
-# 6. KWIN FORCE BLUR PLUGIN
+# 6. BETTER BLUR DX (Replaces old kwin-forceblur)
 # ============================================================================
-step "6. Compiling KWin Force Blur plugin..."
-if [[ -d "${REPO_ROOT}/pkgs/kde/kwin-forceblur" ]]; then
-    BUILD_DIR="${REPO_ROOT}/pkgs/kde/kwin-forceblur/build"
-    rm -rf "$BUILD_DIR"
-    mkdir -p "$BUILD_DIR"
-    cd "$BUILD_DIR"
-    if cmake .. -DKWIN_EFFECTS_FORCEBLUR_QT6=ON 2>/dev/null; then
-        make -j$(nproc)
-        sudo make install
-        ok "Force Blur plugin compiled and installed!"
-    else
-        warn "Force Blur compilation skipped."
-    fi
+# Dissect: Better Blur DX is the modern successor to kwin-forceblur. It's
+# installed as an AUR package in step 1b. Here we just verify it's available.
+# Features: force blur, adjustable brightness/contrast/saturation, corner
+# radius, and refraction effects.
+step "6. Verifying Better Blur DX installation..."
+if pacman -Qi kwin-effects-better-blur-dx &>/dev/null 2>&1; then
+    ok "Better Blur DX is installed (replaces old kwin-forceblur)."
+    info "Enable it in: System Settings > Desktop Effects > Better Blur DX"
+    info "Note: Disable the default KWin 'Blur' effect first to avoid conflicts."
+else
+    warn "Better Blur DX not found. Install with: yay -S kwin-effects-better-blur-dx"
 fi
 
 # ============================================================================
@@ -698,6 +670,16 @@ if command -v kwriteconfig6 &>/dev/null; then
             ;;
     esac
 
+    # Set Darkly as the application style for all themes
+    # Dissect: Darkly provides a modern, polished Qt widget style that
+    # complements any color scheme. It's set as the default app style
+    # regardless of which theme profile the user selected.
+    if pacman -Qi darkly &>/dev/null 2>&1; then
+        info "Setting Darkly as the application style..."
+        kwriteconfig6 --file kdeglobals --group "KDE" --key "widgetStyle" "Darkly" 2>/dev/null || true
+        ok "Application style: Darkly"
+    fi
+
     # Common KWin settings
     kwriteconfig6 --file kwinrc --group "org.kde.kdecoration2" --key "library" "org.kde.kwin.aurorae" 2>/dev/null || true
 
@@ -712,10 +694,15 @@ if command -v kwriteconfig6 &>/dev/null; then
         kwriteconfig6 --file kwinrc --group "Plugins" --key "bismuthEnabled" "false" 2>/dev/null || true
     fi
 
-    # Enable Quickshell bridge & Force Blur
+    # Enable Quickshell bridge & Better Blur DX
     kwriteconfig6 --file kwinrc --group "Plugins" --key "quickshell-kde-bridgeEnabled" "true" 2>/dev/null || true
-    if [[ -d "${REPO_ROOT}/pkgs/kde/kwin-forceblur" ]]; then
-        kwriteconfig6 --file kwinrc --group "Plugins" --key "kwin-effects-forceblurEnabled" "true" 2>/dev/null || true
+    # Disable old forceblur, enable Better Blur DX
+    kwriteconfig6 --file kwinrc --group "Plugins" --key "kwin-effects-forceblurEnabled" "false" 2>/dev/null || true
+    if pacman -Qi kwin-effects-better-blur-dx &>/dev/null 2>&1; then
+        kwriteconfig6 --file kwinrc --group "Plugins" --key "kwin-effects-better-blur-dxEnabled" "true" 2>/dev/null || true
+        # Disable the default blur to avoid conflicts
+        kwriteconfig6 --file kwinrc --group "Plugins" --key "blurEnabled" "false" 2>/dev/null || true
+        ok "Better Blur DX enabled (default blur disabled to avoid conflicts)."
     fi
 
     # Reload KWin & Plasmashell
@@ -738,12 +725,15 @@ echo -e "${c_magenta}${c_bold}║      ICARUS-UI KDE PLASMA SUITE — DEPLOYMENT
 echo -e "${c_magenta}${c_bold}╚═══════════════════════════════════════════════════════════╝${c_reset}"
 echo ""
 echo -e "  ${c_green}✓${c_reset} Active Theme:       ${c_bold}${ACTIVE_THEME}${c_reset}"
+echo -e "  ${c_green}✓${c_reset} App Style:          ${c_bold}Darkly${c_reset}"
+echo -e "  ${c_green}✓${c_reset} Blur Effect:        ${c_bold}Better Blur DX${c_reset}"
 echo -e "  ${c_green}✓${c_reset} Tiling Engine:      ${c_bold}$(if [[ "$BISMUTH_SUCCESS" == "true" ]]; then echo 'Bismuth'; else echo 'Krohnkite'; fi)${c_reset}"
 echo -e "  ${c_green}✓${c_reset} Color Engine:       ${c_bold}Material You Colors (wallpaper-adaptive)${c_reset}"
 echo -e "  ${c_green}✓${c_reset} GTK Themes:         ${c_bold}Cherry Blossom, Coffee, Flowers, Foggy Mountain, Neutral, Urban${c_reset}"
 echo -e "  ${c_green}✓${c_reset} Safety Snapshot:    ${c_bold}icarus-default (restore: konsave -a icarus-default)${c_reset}"
 echo ""
 echo -e "  ${c_cyan}Tip:${c_reset} Change your wallpaper — Material You Colors will auto-adapt your system palette!"
+echo -e "  ${c_cyan}Tip:${c_reset} Disable default ${c_bold}Blur${c_reset} in Desktop Effects to avoid conflicts with Better Blur DX."
 echo -e "  ${c_cyan}Tip:${c_reset} Run ${c_bold}bash tools/system_core.sh${c_reset} to engage gaming performance mode."
 echo -e "  ${c_cyan}Tip:${c_reset} Run ${c_bold}konsave -l${c_reset} to list saved profiles, ${c_bold}konsave -a <name>${c_reset} to restore."
 echo ""

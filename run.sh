@@ -241,7 +241,7 @@ if [[ "$INSTALL_HYPRLAND" == "true" ]]; then
     # GTK settings, installs fonts, and boots the wallpaper daemon.
     step "H1. Installing system dependencies & deploying shared assets"
     info "Running apply-extra.sh (packages, themes, configs, wallpapers)..."
-    bash "${REPO_PATH}/apply-extra.sh"
+    bash "${REPO_PATH}/apply-extra.sh" --hyprland
     ok "Base system components installed."
 
     # ── H2. Initialize dynamic color palette ────────────────────────────────
@@ -377,7 +377,7 @@ if [[ "$INSTALL_KDE" == "true" ]]; then
     # compilation logic between the two DE paths.
     step "K1. Installing common system components (shared assets)"
     info "Running apply-extra.sh (packages, themes, wallpapers, fonts)..."
-    bash "${REPO_PATH}/apply-extra.sh"
+    bash "${REPO_PATH}/apply-extra.sh" --kde
     ok "Shared system components installed."
 
     # ── K2. Execute KDE Plasma installer ────────────────────────────────────

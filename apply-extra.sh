@@ -8,6 +8,14 @@
 
 set -euo pipefail
 
+# Parse arguments
+TARGET_DE="hyprland"
+if [[ "${1:-}" == "--kde" ]]; then
+    TARGET_DE="kde"
+elif [[ "${1:-}" == "--hyprland" ]]; then
+    TARGET_DE="hyprland"
+fi
+
 # Style helpers
 c_reset='\033[0m'; c_bold='\033[1m'; c_green='\033[1;32m'; c_yellow='\033[1;33m'; c_red='\033[1;31m'; c_blue='\033[1;34m'
 info()  { printf "    %s\n" "$1"; }
@@ -129,21 +137,29 @@ install_aur_pkgs() {
 }
 
 step "1. Installing system dependencies"
-info "Installing core desktop applications and utilities..."
-install_pkgs \
-    hyprland waybar rofi-wayland kitty dolphin dunst swaybg \
-    hyprlock hypridle wl-clipboard cliphist \
-    brightnessctl playerctl fastfetch cava pavucontrol \
-    jq pamixer libnotify sassc ffmpeg socat \
-    starship eza bat zoxide fzf ripgrep fd gum \
-    nemo nwg-look swaync fuzzel wlsunset wmenu wget mpv
 
-info "Installing extra packages..."
-install_aur_pkgs \
-    wlogout eww-wayland adw-gtk-theme bibata-cursor-theme \
-    swayosd-git wl-clip-persist xfce-polkit waypaper \
-    helium-browser-bin discord spotify mpvpaper \
-    noctalia-shell caelestia-shell caelestia-cli || true
+# ── Shared Packages (Needed by both KDE and Hyprland) ──
+SHARED_PKGS=(kitty dolphin fastfetch cava pavucontrol jq pamixer libnotify sassc ffmpeg socat starship eza bat zoxide fzf ripgrep fd gum nemo wget mpv)
+SHARED_AUR_PKGS=(adw-gtk-theme bibata-cursor-theme helium-browser-bin discord spotify)
+
+# ── Hyprland Only Packages (Heavy, skip if KDE-only) ──
+HYPRLAND_PKGS=(hyprland waybar rofi-wayland dunst swaybg hyprlock hypridle wl-clipboard cliphist brightnessctl playerctl nwg-look swaync fuzzel wlsunset wmenu)
+HYPRLAND_AUR_PKGS=(wlogout eww-wayland swayosd-git wl-clip-persist xfce-polkit waypaper mpvpaper noctalia-shell caelestia-shell caelestia-cli)
+
+info "Installing shared core desktop applications and utilities..."
+install_pkgs "${SHARED_PKGS[@]}"
+
+info "Installing shared extra packages..."
+install_aur_pkgs "${SHARED_AUR_PKGS[@]}" || true
+
+if [[ "$TARGET_DE" == "hyprland" ]]; then
+    info "Target DE is Hyprland. Installing heavy compositor packages (this may take a while)..."
+    install_pkgs "${HYPRLAND_PKGS[@]}"
+    info "Installing heavy AUR packages for Hyprland..."
+    install_aur_pkgs "${HYPRLAND_AUR_PKGS[@]}" || true
+else
+    info "Target DE is KDE. Skipping heavy Hyprland components to save hours of compilation time."
+fi
 
 ok "System and AUR dependencies installed."
 
@@ -276,7 +292,7 @@ EOF
 cp "${HOME}/.config/gtk-3.0/settings.ini" "${HOME}/.config/gtk-4.0/settings.ini"
 ok "User GTK parameters written."
 
-step "6b. Copying user configurations (hypr, waybar, kitty, rofi, dunst, fastfetch, cava, wlogout, eww, nvim, yazi)"
+step "6b. Copying user configurations"
 mkdir -p "${HOME}/.config" "${HOME}/.themes" "${HOME}/.local/share/icons"
 
 # Copy premium macOS assets to user directories
@@ -295,7 +311,13 @@ if [[ -d "${REPO_PATH}/configs/sddm/WhiteSur" ]]; then
     sudo cp -rn "${REPO_PATH}/configs/sddm/WhiteSur" /usr/share/sddm/themes/ || true
 fi
 
-for CFG_DIR in hypr waybar kitty rofi dunst fastfetch cava wlogout eww nvim yazi; do
+# Dissect: If installing KDE, we skip copying the Hyprland specific configs
+CFG_DIRS_TO_COPY="kitty dunst fastfetch cava nvim yazi"
+if [[ "$TARGET_DE" == "hyprland" ]]; then
+    CFG_DIRS_TO_COPY+=" hypr waybar rofi wlogout eww"
+fi
+
+for CFG_DIR in $CFG_DIRS_TO_COPY; do
     if [[ -d "${REPO_PATH}/configs/${CFG_DIR}" ]]; then
         info "Copying ${CFG_DIR} configuration..."
         # Backup existing config if it's not a symlink and already exists
@@ -317,10 +339,12 @@ if [[ -f "${REPO_PATH}/configs/starship.toml" ]]; then
 fi
 
 # Ensure all scripts are executable
-chmod +x "${HOME}/.config/hypr/scripts/"* 2>/dev/null || true
-[[ -d "${HOME}/.config/eww/scripts" ]] && chmod +x "${HOME}/.config/eww/scripts/"*.sh 2>/dev/null || true
-if [[ -f "${HOME}/.config/rofi/icarus-powermenu-entries.sh" ]]; then
-    chmod +x "${HOME}/.config/rofi/icarus-powermenu-entries.sh"
+if [[ "$TARGET_DE" == "hyprland" ]]; then
+    chmod +x "${HOME}/.config/hypr/scripts/"* 2>/dev/null || true
+    [[ -d "${HOME}/.config/eww/scripts" ]] && chmod +x "${HOME}/.config/eww/scripts/"*.sh 2>/dev/null || true
+    if [[ -f "${HOME}/.config/rofi/icarus-powermenu-entries.sh" ]]; then
+        chmod +x "${HOME}/.config/rofi/icarus-powermenu-entries.sh"
+    fi
 fi
 
 # Copy theme defaults into the custom config layout (~/.config/icarus/theme)
@@ -332,25 +356,13 @@ if [[ -d "${REPO_PATH}/configs/theme" ]]; then
     mkdir -p "${HOME}/.config/icarus/theme"
 fi
 
-# Append welcome animation to local .bashrc if not already present
-if ! grep -q "welcome.sh" "${HOME}/.bashrc" 2>/dev/null; then
-    info "Adding welcome.sh to ~/.bashrc..."
-    cat >> "${HOME}/.bashrc" << 'EOF'
-
-# Icarus-ArchOS — animated welcome screen & system info on terminal open
-if [[ -f "${HOME}/.config/hypr/scripts/welcome.sh" ]]; then
-    bash "${HOME}/.config/hypr/scripts/welcome.sh"
-elif command -v fastfetch &>/dev/null; then
-    fastfetch
-fi
-EOF
-fi
-
 ok "User configurations successfully updated and copied to ~/.config/."
 
-step "7. Restarting wallpaper daemon services"
-killall icarus-wallpaper-daemon mpvpaper swaybg 2>/dev/null || true
-(icarus-wallpaper &)
-ok "Wallpaper launcher & intelligente pausing daemon successfully booted!"
+if [[ "$TARGET_DE" == "hyprland" ]]; then
+    step "7. Restarting wallpaper daemon services"
+    killall icarus-wallpaper-daemon mpvpaper swaybg 2>/dev/null || true
+    (icarus-wallpaper &)
+    ok "Wallpaper launcher & intelligente pausing daemon successfully booted!"
+fi
 
-step "Setup complete! Enjoy the peak visuals."
+step "Apply-extra setup complete! Shared assets deployed."
